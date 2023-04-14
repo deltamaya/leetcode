@@ -61,9 +61,40 @@ bool searchMatrix(vector<vector<int>>& matrix, int target) {
 	}
 	return false;
 }
+string rec(const int times,string& s,int begin){
+    string ret;
+    for(int i=begin;i<s.size();++i){
+        if(s[i]>='0'&&s[i]<='9'){
+			string n;
+			while(s[i]>='0'&&s[i]<='9'){
+				n+=s[i];
+				++i;
+			}
+            ret+=rec(stoi(n),s,i+1);
+			int cnt=0;
+			do{
+				if(s[i]=='[')++cnt;
+				if(s[i]==']')--cnt;
+				if(cnt)++i;
+			}while(cnt);
+        }else if(s[i]==']'){
+			string tmp;
+			for(int j=0;j<times;++j){
+				tmp+=ret;
+			}
+			return tmp;
+		}else{
+			ret+=s[i];
+		}
+    }
+	return ret;
+}
+string decodeString(string s) {
+    return  rec(1,s,0);
+}
 int main () {
 	string s;
-	getline(cin,s);
-	cout<<reverseWords(s);
+	cin>>s;
+	cout<<decodeString(s);
 	return 0;
 }
