@@ -92,6 +92,42 @@ string rec(const int times,string& s,int begin){
 string decodeString(string s) {
     return  rec(1,s,0);
 }
+vector<int> productExceptSelf(vector<int>& nums) {
+    vector<int>ret(nums.size()),pre(nums.size()),last(nums.size());
+	int m=1;
+	for(int i=0;i<nums.size();++i){
+		m*=nums[i];
+		pre[i]=m;
+	}
+	m=1;
+	for(int i=nums.size()-1;i>=0;--i){
+		m*=nums[i];
+		last[i]=m;
+	}
+	for(int i=1;i<nums.size()-1;++i){
+		ret[i]=pre[i-1]*last[i+1];
+	}
+	ret[0]=last[1];ret[nums.size()-1]=pre[nums.size()-2];
+	return ret;
+}
+int lengthOfLIS(vector<int>& nums) {
+	vector<int>len;
+	int ret;
+	for(int i=0;i<nums.size();++i){
+		int j=i;
+		int maxlen=1;
+		while(j>=0){
+			if(nums[i]>nums[j]){
+				maxlen=max(maxlen,len[j]+1);
+				
+			}
+			ret=max(maxlen,ret);
+			--j;
+		}
+		len.push_back (maxlen);
+	}
+	return ret;
+}
 int main () {
 	string s;
 	cin>>s;
