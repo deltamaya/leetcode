@@ -128,6 +128,22 @@ int lengthOfLIS(vector<int>& nums) {
 	}
 	return ret;
 }
+int coinChange(vector<int>& coins, int amount) {
+	vector<int>ret(amount+1);
+	sort(coins.begin(),coins.end());
+	for(auto& e:ret)e=INT_MAX;
+	ret[0]=0;
+	for(auto c:coins){
+		ret[c]=1;
+	}
+	for(int i=1;i<=amount;++i){
+		for(int j=0;j<coins.size();++j){
+			if(i-coins[j]<=0)break;
+			ret[i]=min(ret[i],ret[i-coins[j]]+1);
+		}
+	}
+	return ret[amount];
+}
 int main () {
 	string s;
 	cin>>s;
