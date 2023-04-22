@@ -156,10 +156,73 @@ vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
 int FAdd(int x,int y){
 	return (x+y)*10;
 }
-int main () {
-	vector<int>x;
-	for(const auto& e:x){
-		cout<<e;
+int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+	unordered_map<int,int>sum_1_2,sum_3_4;
+	for(auto e1:nums1){
+		for(auto e2:nums2){
+			sum_1_2[e1+e2]++;
+		}
 	}
+	for(auto e3:nums3){
+		for(auto e4:nums4){
+			sum_3_4[e3+e4]++;
+		}
+	}
+	int cnt=0;
+	for(auto e1:sum_1_2){
+		for(auto e2:sum_3_4){
+			if(e1.first+e2.first==0)cnt+=(e1.second*e2.second);
+		}
+	}
+	return cnt;
+	
+}
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+	vector<vector<int>>ret;
+	sort(nums.begin(),nums.end());
+	int i,j,r,l;
+	for(i=0;i<nums.size();++i){
+		if(i&&nums[i]==nums[i-1])continue;
+		for(j=i+1;j<nums.size();++j){
+			if(j!=i+1&&nums[j]==nums[j-1])continue;
+			l=j+1;r=nums.size()-1;
+			if(l>=r)continue;
+			if(target>=0&&nums[i]>target/4||nums[r]<target/4||nums[i]+nums[j]>target/2)continue;
+			while(l<r){
+				if(l!=j+1&&nums[l]==nums[l-1]){
+					++l;
+					continue;
+				}
+				if(r!=nums.size()-1&&nums[r]==nums[r+1]){
+					--r;
+					continue;
+				}
+				if(nums[l]+nums[r]<target/2){
+					++l;
+					continue;
+				}
+				int sum=int(((long long)nums[i]+nums[j]+nums[l]+nums[r])%INT_MAX);
+				if(sum==target){
+					ret.push_back ({nums[i],nums[j],nums[l],nums[r]});
+					++l;--r;
+				}else if(sum>target){
+					--r;
+				}else{
+					++l;
+				}
+			}
+		}
+	}
+	return ret;
+}
+ostream& operator<<(ostream&os,const vector<int>&v){
+	for(auto e:v){
+		os<<e<<' ';
+	}
+	os<<endl;
+	return os;
+}
+int main () {
+	cout<<(11%-3);
 	return 0;
 }
