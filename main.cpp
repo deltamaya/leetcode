@@ -144,9 +144,22 @@ int coinChange(vector<int>& coins, int amount) {
 	}
 	return ret[amount];
 }
+vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+	sort(people.begin(),people.end(),[](const vector<int>& x,const vector<int>&y){return x[0]>y[0]||x[0]==y[0]&&x[1]<y[1];});
+	vector<vector<int>>ret;
+	for(const auto&p:people){
+		ret.insert (ret.begin()+p[1],p);
+	}
+	return ret;
+}
+#define MAdd(x,y) (((x)+(y))*10)
+int FAdd(int x,int y){
+	return (x+y)*10;
+}
 int main () {
-	string s;
-	cin>>s;
-	cout<<decodeString(s);
+	vector<int>x;
+	for(const auto& e:x){
+		cout<<e;
+	}
 	return 0;
 }
