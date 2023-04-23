@@ -222,7 +222,47 @@ ostream& operator<<(ostream&os,const vector<int>&v){
 	os<<endl;
 	return os;
 }
+int KMP(const string& str,const string& target){
+	vector<int>next;
+	for(int i=0;i<target.size();++i){
+		int cnt=0;
+		int len=1;
+		int j=0;
+		while(j+len<=i){
+			if(target[j]==target[j+len]){
+				++cnt;
+				++j;
+			}else{
+				++len;
+				cnt=0;
+				j=0;
+			}
+		}
+		next.push_back (cnt);
+	}
+	int i=0,f=0,begin=0;
+	while(i<str.size()){
+		if(str[i]!=target[f]){
+			if(f)f=next[f-1];
+			else{
+				++i;
+			}
+			continue;
+		}
+		while(str[i]==target[f]){
+			if(f==target.size()-1){
+				return i-f;
+			}
+			if(i==str.size()-1){
+				return -1;
+			}
+			++i;++f;
+		}
+		if(f)f=next[f-1];
+	}
+	return -1;
+}
 int main () {
-	cout<<(11%-3);
+	cout<<KMP("xaabaabaaf","aabaaf");
 	return 0;
 }
