@@ -1,5 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
+struct TreeNode {
+     int val;
+     TreeNode *left;
+     TreeNode *right;
+     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 string reverseWords(string s) {
 	reverse(s.begin(),s.end());
 	int fast,slow;fast=slow=0;
@@ -262,7 +270,79 @@ int KMP(const string& str,const string& target){
 	}
 	return -1;
 }
+bool repeatedSubstringPattern(string s) {
+	string tmp=s+s;
+	tmp.pop_back();
+	return tmp.find(s,1)!=-1;
+}
+int evalRPN(vector<string>& tokens) {
+	stack<int>num;
+	int ret=0;
+	for(auto e:tokens){
+		if(e[0]>='0'&&e[0]<='9'||e[0]=='-'&&e[1]>='0'&&e[1]<='9'){
+			num.push(stoi (e));
+		}else{
+			int n1,n2;
+			switch (e[0]){
+				case '+':
+					n2=num.top();num.pop();
+					n1=num.top();num.pop();
+					num.push(n1+n2);
+					break;
+				case '-':
+					n2=num.top();num.pop();
+					n1=num.top();num.pop();
+					num.push(n1-n2);
+					break;
+				case '*':
+					n2=num.top();num.pop();
+					n1=num.top();num.pop();
+					num.push(n1*n2);
+					break;
+				case '/':
+					n2=num.top();num.pop();
+					n1=num.top();num.pop();
+					num.push(n1/n2);
+					break;
+				
+			}
+		}
+	}
+	return num.top();
+}
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+	vector<int>ret;
+	deque<int>q;
+	for(int i=0;i<k;++i){
+		while(!q.empty()&&nums[i]>=q.back()){
+			q.pop_back();
+		}
+		q.push_back (i);
+	}
+	for(int i=0;i+k<nums.size();++i){
+		ret.push_back (nums[q.front()]);
+		if(q.front()==i){
+			q.pop_front();
+		}
+		while(!q.empty()&&nums[i+k]>=q.back()){
+			q.pop_back();
+		}
+		q.push_back (i+k);
+	}
+	ret.push_back (q.front());
+	return ret;
+}
+int rec(TreeNode*root){
+    if(!root)return INT_MAX;
+    if(!root->left&&!root->right)return 1;
+    return min(rec(root->left),rec(root->right))+1;
+}
+int minDepth(TreeNode* root) {
+    if(!root)return 0;
+    return rec(root);
+}
 int main () {
-	cout<<KMP("xaabaabaaf","aabaaf");
+	vector<string>v={"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
+	cout<<evalRPN(v);
 	return 0;
 }
