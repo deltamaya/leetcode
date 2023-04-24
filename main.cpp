@@ -369,6 +369,130 @@ bool isBalanced(TreeNode* root) {
 	if(!root)return true;
 	return abs(h(root->left)-h(root->right))<2&&isBalanced(root->left)&&isBalanced(root->right);
 }
+//void rec(vector<string>&ret,string path,TreeNode*root){
+//	path+="->";
+//	path+= to_string (root->val);
+//	if(!root->left&&!root->right) {
+//		ret.push_back (path);
+//		return;
+//	}
+//	if(root->left)rec(ret,path,root->left);
+//	if(root->right)rec(ret,path,root->right);
+//}
+//vector<string> binaryTreePaths(TreeNode* root) {
+//	string path;
+//	vector<string>ret;
+//	path+= to_string (root->val);
+//	if(!root->left&&!root->right) {
+//		ret.push_back (path);
+//	}
+//	if(root->left)rec(ret,path,root->left);
+//	if(root->right)rec(ret,path,root->right);
+//	return ret;
+//}
+void rec(vector<string>&ret,vector<int>& path,TreeNode*root){
+	path.push_back(root->val);
+	if(root->left){
+		rec(ret,path,root->left);
+	}
+	if(root->right){
+		rec(ret,path,root->right);
+	}
+	
+	if(!root->left&&!root->right){
+		string tmp;
+		tmp+=to_string(path[0]);
+		for(int i=1;i<path.size();++i){
+			tmp+="->";
+			tmp+=to_string(path[i]);
+		}
+		ret.push_back (tmp);
+	}
+	path.pop_back();
+}
+vector<string> binaryTreePaths(TreeNode* root) {
+	vector<int> path;
+	vector<string>ret;
+	rec(ret,path,root);
+	return ret;
+}
+int sumOfLeftLeaves(TreeNode* root) {
+	int ret=0;
+	if(!root)return 0;
+	if(root->left&&!root->left->left&&!root->left->right)return root->left->val+sumOfLeftLeaves(root->right);
+	else{
+		return sumOfLeftLeaves(root->left)+sumOfLeftLeaves(root->right);
+	}
+}
+//迭代法
+//int findBottomLeftValue(TreeNode* root) {
+//	int ret=0;int maxh=0;
+//	queue<pair<TreeNode*,int>>q;
+//	q.push({root,1});
+//	while(!q.empty()){
+//		auto e=q.front();q.pop();
+//		auto p=e.first;int h=e.second;
+//		if(h>maxh) { ret = p->val;maxh=h; }
+//		if(p->left)q.push({p->left,h+1});
+//		if(p->right)q.push({p->right,h+1});
+//	}
+//	return ret;
+//}
+//递归法
+void rec(TreeNode*root,int height,int&val,int&val_h){
+	if(root->left){
+		rec(root->left,height+1,val,val_h);
+	}
+	if(root->right){
+		rec(root->right,height+1,val,val_h);
+	}
+	if(height>val_h){
+		val_h=height;
+		val=root->val;
+	}
+}
+int findBottomLeftValue(TreeNode* root) {
+	int val=root->val;
+	int val_h=1;
+	rec(root,1,val,val_h);
+	return val;
+}
+
+bool rec(TreeNode*root,int targetSum,int&sum){
+	sum+=root->val;
+	bool ret=false;
+	if(root->left){
+		ret= rec (root->left, targetSum, sum);
+	}
+	if(root->right){
+		ret=ret||rec(root->right,targetSum,sum);
+	}
+	if(!root->left&&!root->right&&sum==targetSum)return true;
+	sum-=root->val;
+	return ret;
+}
+bool hasPathSum(TreeNode* root, int targetSum) {
+	if(!root)return false;
+	int sum=0;
+	return rec(root,targetSum,sum);
+}
+TreeNode* rec(vector<int>& inorder, vector<int>& postorder,int in_begin,int in_end,int post_begin,int post_end){
+	if(in_begin>in_end||post_begin>post_end)return nullptr;
+	auto root=new TreeNode(postorder[post_end]);
+	int i=0;
+	for(i=0;i<=in_end-in_begin;++i){
+		if(inorder[in_begin+i]==postorder[post_end]) {
+			root->left=rec(inorder,postorder,in_begin,in_begin+i-1,post_begin,post_begin+i-1);
+			root->right=rec(inorder,postorder,in_begin+i+1,in_end,post_begin+i,post_end-1);
+			root->val=inorder[in_begin+i];
+			return root;
+		}
+	}
+	return root;
+}
+TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+	return rec(inorder,postorder,0,inorder.size()-1,0,postorder.size()-1);
+}
 int main () {
 	vector<string>v={"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
 	cout<<evalRPN(v);
