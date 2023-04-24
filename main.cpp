@@ -341,6 +341,34 @@ int minDepth(TreeNode* root) {
     if(!root)return 0;
     return rec(root);
 }
+int countNodes(TreeNode* root) {
+	auto p=root;
+	int maxDepth=0;
+	int depth=0;
+	while(p){
+		++maxDepth;
+		p=p->left;
+	}
+	p=root;
+	while(p){
+		++depth;
+		p=p->right;
+	}
+	if(depth==maxDepth){
+		return (1<<depth)-1;
+	}
+	else{
+		return countNodes(root->left)+countNodes(root->right)+1;
+	}
+}
+int h(TreeNode*root){
+	if(!root)return 0;
+	return max(h(root->left),h(root->right))+1;
+}
+bool isBalanced(TreeNode* root) {
+	if(!root)return true;
+	return abs(h(root->left)-h(root->right))<2&&isBalanced(root->left)&&isBalanced(root->right);
+}
 int main () {
 	vector<string>v={"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
 	cout<<evalRPN(v);
