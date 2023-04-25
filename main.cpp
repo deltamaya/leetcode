@@ -676,10 +676,48 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
 	rec_235(root,p,q,ret);
 	return ret;
 }
+string convertToTitle(int columnNumber) {
+	string ret;
+	int i=0;
+	while(columnNumber>0){
+		auto tmp=columnNumber%26;
+		if(tmp!=0) {
+			ret += char ('A' - 1 + tmp);
+			columnNumber/=26;
+		}
+		else{
+			columnNumber/=26;
+			--columnNumber;
+			ret+='Z'
+				;}
+	}
+	reverse(ret.begin(),ret.end());
+	return ret;
+}
+void rec_701(TreeNode*root,int val){
+	if(root->val<val){
+		if(!root->right){
+			root->right=new TreeNode(val);
+			return;
+		}
+		rec_701(root->right,val);
+	}else if(root->val>val){
+		if(!root->left){
+			root->left=new TreeNode(val);
+			return;
+		}
+		rec_701(root->left,val);
+	}
+}
+TreeNode* insertIntoBST(TreeNode* root, int val) {
+	if(!root){
+		root=new TreeNode(val);
+		return root;
+	}
+	rec_701(root,val);
+	return root;
+}
 int main () {
-	auto root=new TreeNode(2);
-	root->left=new TreeNode(1);
-	root->right=new TreeNode(3);
-	cout<<isValidBST(root)<<endl;
+	cout<<convertToTitle(2147483647);
 	return 0;
 }
