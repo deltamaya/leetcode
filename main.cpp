@@ -493,8 +493,193 @@ TreeNode* rec(vector<int>& inorder, vector<int>& postorder,int in_begin,int in_e
 TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
 	return rec(inorder,postorder,0,inorder.size()-1,0,postorder.size()-1);
 }
+
+//20230425
+
+//递归解法TC=O(N^2)
+//TreeNode* rec(vector<int>&nums,int begin,int end){
+//	if(begin>end)return nullptr;
+//	int max_idx=begin;
+//	int max_value=nums[begin];
+//	for(int i=begin;i<=end;++i){
+//		if(nums[i]>=max_value){
+//			max_idx=i;
+//			max_value=nums[i];
+//		}
+//	}
+//	auto root=new TreeNode(max_value);
+//	root->left=rec(nums,begin,max_idx-1);
+//	root->right=rec(nums,max_idx+1,end);
+//	return root;
+//}
+//TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
+//	return rec(nums,0,nums.size()-1);
+//}
+
+//单调栈解法TC=O(N)
+TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
+	stack<TreeNode*>stk;
+	for(auto e:nums){
+		auto node=new TreeNode(e);
+		while(!stk.empty()&&stk.top()->val<e){
+			auto t=stk.top();
+			stk.pop();
+			node->left=t;
+		}
+		if(!stk.empty()&&stk.top()->val>e){
+			stk.top()->right=node;
+			
+		}
+		stk.push(node);
+	}
+	while(stk.size()>1)stk.pop();
+	return stk.top();
+}
+
+TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+	if(!root1&&!root2)return nullptr;
+	auto p=new TreeNode(0);
+	if(root1)p->val+=root1->val;
+	if(root2)p->val+=root2->val;
+	TreeNode* r1l,*r2l,*r1r,*r2r;
+	if(!root1){r1l=nullptr;r1r=nullptr;}else{r1l=root1->left;r1r=root1->right;}
+	if(!root2){r2r=nullptr;r2l=nullptr;}else{r2l=root2->left;r2r=root2->right;}
+	p->left= mergeTrees (r1l,r2l);
+	p->right   = mergeTrees (r1r,r2r);
+	return p;
+}
+TreeNode* searchBST(TreeNode* root, int val) {
+	while(root){
+		if(root->val>val){
+			return searchBST (root->left,val);
+		}else if(root->val<val){
+			return searchBST (root->right,val);
+		}else{
+			return root;
+		}
+	}
+	return nullptr;
+}
+void Traversal(TreeNode*root,vector<int>&vec){
+	if(!root)return;
+	Traversal (root->left,vec);
+	vec.push_back(root->val);
+	Traversal (root->right,vec);
+}
+int getMinimumDifference(TreeNode* root) {
+	vector<int>vec;
+	Traversal(root,vec);
+	int gap=INT_MAX;
+	for(int i=1;i<vec.size();++i){
+		gap=min(gap,abs(vec[i]-vec[i-1]));
+	}
+	return gap;
+	
+}
+bool isValidBST(TreeNode* root) {
+	vector<int>vec;
+	Traversal(root,vec);
+	for(int i=1;i<vec.size();++i){
+		if(vec[i]<=vec[i-1])return false;
+	}
+	return true;
+}
+//void rec_501(unordered_map<int,int>&table,TreeNode*root){
+//	if(!root)return;
+//	table[root->val]++;
+//	rec_501 (table,root->left);
+//	rec_501 (table,root->right);
+//
+//}
+//vector<int> findMode(TreeNode* root) {
+//	unordered_map<int,int>table;
+//	vector<int>ret;
+//	rec_501(table,root);
+//	int times=0;
+//	for(auto e:table){
+//		times=max(times,e.second);
+//	}
+//	for(auto e:table){
+//		if(times==e.second){
+//			ret.push_back (e.first);
+//		}
+//	}
+//	return ret;
+//}
+
+
+//双指针遍历二叉树，遇到二叉搜索树就像中序遍历是升序序列
+void rec_501(TreeNode*cur,TreeNode*&pre,int& max_count,int& count,vector<int>&ret){
+	if(!cur)return;
+	//left
+	rec_501(cur->left,pre,max_count,count,ret);
+	//mid
+	if(!pre||pre->val!=cur->val){
+		pre=cur;
+		count=1;
+	}
+	else if(pre->val==cur->val){
+		++count;
+	}
+	if(count==max_count){
+		ret.push_back (cur->val);
+	}else if(count>max_count){
+		ret.clear();
+		ret.push_back (cur->val);
+		max_count=count;
+	}
+	//right
+	rec_501(cur->right,pre,max_count,count,ret);
+}
+vector<int> findMode(TreeNode* root) {
+	vector<int>ret;
+	int max_count=0;
+	int count=0;
+	TreeNode*pre= nullptr;
+	rec_501(root, pre,max_count,count,ret);
+	return ret;
+}
+TreeNode* rec_236(TreeNode*root,TreeNode*p,TreeNode*q,TreeNode*&ret){
+	if(!root||ret)return nullptr;
+	auto l=rec_236(root->left,p,q,ret);
+	auto r=rec_236(root->right,p,q,ret);
+	if(ret)return nullptr;
+	if(root->val==p->val||root->val==q->val){
+		if(l||r) {
+			ret=root;
+			return nullptr;
+		}
+		return root;
+	}
+	if(l&&r){
+		ret=root;
+	}
+	if(l||r)return root;
+	return nullptr;
+	
+}
+TreeNode* lowestCommonAncestor_nonBST(TreeNode* root, TreeNode* p, TreeNode* q) {
+	TreeNode*ret= nullptr;
+	rec_236 (root,p,q,ret);
+	return ret;
+}
+void rec_235(TreeNode* root, TreeNode* p, TreeNode* q,TreeNode*&ret){
+	if(root->val>q->val&&root->val>p->val){
+		rec_235(root->left,p,q,ret);
+	}else if(root->val<q->val&&root->val<p->val){
+		rec_235(root->right,p,q,ret);
+	}
+	else ret=root;
+}
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+	TreeNode*ret= nullptr;
+	rec_235(root,p,q,ret);
+	return ret;
+}
 int main () {
-	vector<string>v={"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
-	cout<<evalRPN(v);
+	auto root=new TreeNode(2);
+	root->left=new TreeNode(1);
+	root->right=new TreeNode(3);
+	cout<<isValidBST(root)<<endl;
 	return 0;
 }
