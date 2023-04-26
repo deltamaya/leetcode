@@ -717,7 +717,46 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
 	rec_701(root,val);
 	return root;
 }
+class AClass{
+public:
+	int x_;
+	int y_;
+	string* p_;
+	//对于内置类型，c++不做初始化
+	//对于自定义类型，c++自动调用默认初始化（无参）
+	
+	//什么时候需要写构造函数：一般都需要写
+	// 什么时候可以不写构造：1.只有内置类型，且所有内置类型成员都有缺省值2.之后自定义类型，且每个类的默认构造都符合预期
+	//内置类型成员会调用浅拷贝，自定义类型成员会调用自己的拷贝构造函数
+	AClass(string p="",int x=0,int y=0):
+		x_(x),
+		y_(y)
+		{
+			p_=new string(p) ;
+		};
+	
+	//什么时候需要写拷贝构造：需要深拷贝的时候（类中有动态申请的内存）
+	//否则编译器将默认进行值拷贝/浅拷贝
+	AClass(const AClass& another){//***拷贝构造函数只能传递引用，否则会造成无限递归***
+		x_=another.x_;
+		y_=another.y_;
+		p_=new string(*(another.p_));
+		//p_=another.p_;//错误的，浅拷贝会导致1.两次释放内存2.修改一个另一个也会变
+	}
+	
+	
+	//什么时候需要写析构：类动态申请内存时
+	//不需要：1.类型全都是内置类型2.类中的自定义类型都实现了析构
+	~AClass(){
+		cout<<"destruction\n";
+		delete p_;
+	}
+	bool operator==(const AClass& another)const{
+		return x_==another.x_&&y_==another.y_&&(*p_)==*(another.p_);
+	}
+};
 int main () {
-	cout<<convertToTitle(2147483647);
+	AClass a1;
+	auto a2(a1);
 	return 0;
 }
