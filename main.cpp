@@ -755,8 +755,179 @@ public:
 		return x_==another.x_&&y_==another.y_&&(*p_)==*(another.p_);
 	}
 };
+class Date {
+
+	int yy_=1;
+	int mm_=1;
+	int dd_=1;
+public:
+
+// 获取某年某月的天数
+	
+	int GetMonthDay (int year, int month){
+	if(month==2&&(year%400==0||year%4==0&&year%100==0))return 29;
+	static const int months[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+	return months[month+1];
+}
+
+	// 全缺省的构造函数
+	
+	Date (int year = 1900, int month = 1, int day = 1):
+		yy_(year),
+		mm_(month),
+		dd_(day){};
+	// 拷贝构造函数
+
+// d2(d1)
+	
+	Date (const Date &d):
+		yy_(d.yy_),
+		mm_(d.mm_),
+		dd_(d.dd_){};
+	// 赋值运算符重载
+
+// d2 = d3 -> d2.operator=(&d2, d3)
+	Date &operator= (const Date &d){
+		yy_=d.yy_;
+		mm_=d.mm_;
+		dd_=d.dd_;
+		return *this;
+	}
+	// 析构函数
+	
+	~Date ()=default;
+	//日期+=天数
+	
+	Date &operator+= (int day){
+		dd_+=day;
+		while(dd_> GetMonthDay (yy_,mm_)){
+			dd_-= GetMonthDay (yy_,mm_);
+			if(++mm_>12){
+				++yy_;
+				mm_=1;
+			}
+		}
+		return *this;
+	}
+	// 日期+天数
+	
+	Date operator+ (int day){
+		Date tmp(*this);
+		tmp+=day;
+		return tmp;
+	}
+	// 日期-天数
+	
+	Date& operator-= (int day){
+		dd_-=day;
+		if(dd_>0)return *this;
+		while(dd_<0){
+			if(!(--mm_)){
+				--yy_;
+				mm_=12;
+			}
+			dd_+= GetMonthDay (yy_,mm_);
+		}
+		return *this;
+	}
+	// 日期-=天数
+	
+	Date operator- (int day){
+		Date tmp(*this);
+		tmp-=day;
+		return tmp;
+	}
+	// 前置++
+	
+	Date &operator++ (){
+		if(++dd_> GetMonthDay (yy_,mm_)){
+			dd_=1;
+			if(++mm_>12){
+				++yy_;mm_=1;
+			}
+		}
+		return *this;
+	}
+	// 后置++
+	
+	Date operator++ (int){
+		Date tmp(*this);
+		(*this)+=1;
+		return tmp;
+	}
+	// 后置--
+	
+	Date operator-- (int){
+		Date tmp(*this);
+		if(!(--dd_)){
+			if(!--mm_){
+				mm_=12;
+				--yy_;
+			}
+			dd_= GetMonthDay (yy_,mm_);
+		}
+		return tmp;
+	}
+	// 前置--
+	
+	Date &operator-- (){
+		if(!(--dd_)){
+			if(!--mm_){
+				mm_=12;
+				--yy_;
+			}
+			dd_= GetMonthDay (yy_,mm_);
+		}
+		return *this;
+	}
+	
+	bool operator>(const Date& d){
+		if(yy_>=d.yy_&&mm_>=d.mm_&&dd_>d.dd_){
+			return true;
+		}
+		return false;
+	}
+	
+	bool operator==(const Date& d){
+		return (yy_==d.yy_&&mm_==d.mm_&&dd_==d.dd_);
+	}
+	// >=运算符重载
+	bool operator >= (const Date& d){
+		return *this>d||*this==d;
+	}
+	// <运算符重载
+	bool operator< (const Date& d){
+		return !(*this>=d);
+	}
+	// <=运算符重载
+	bool operator<= (const Date& d){
+		return (*this<d)||(*this==d);
+	}
+	// !=运算符重载
+	bool operator != (const Date& d){
+		return !(*this==d);
+	}
+	// 日期-日期 返回天数
+	int operator-(const Date& d){
+		int ret=0;
+		Date tmp(d);
+		if(*this>d){
+			
+			while(*this>tmp){
+				++ret;++tmp;
+			}
+		}else{
+			while(*this<tmp){
+				--ret;--tmp;
+			}
+		}
+		return ret;
+	}
+};
+
+
 int main () {
-	AClass a1;
-	auto a2(a1);
+	Date d1=(2023,4,27);
+	
 	return 0;
 }
