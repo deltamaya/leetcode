@@ -925,7 +925,122 @@ public:
 	}
 };
 
-
+TreeNode* deleteNode(TreeNode* root, int key) {
+	auto p=root;
+	TreeNode* pre= nullptr;
+	TreeNode*newroot= nullptr;
+	while(p){
+		if(p->val>key){
+			pre=p;
+			p=p->left;
+		}else if(p->val==key){
+			break;
+		}else{
+			pre=p;
+			p=p->right;
+		}
+	}
+	if(p==root){
+		newroot =new TreeNode(INT_MAX,root, nullptr);
+		pre=newroot;
+	}
+	if(!p)return root;
+	if(!p->left&&!p->right){
+		delete p;
+		if(pre->val>key)pre->left= nullptr;
+		else pre->right= nullptr;
+	}
+	else if(p->left&&!p->right){
+		if(pre->val>key)pre->left=p->left;
+		else pre->right=p->left;
+		delete p;
+	}else if(p->right&&!p->left){
+		if(pre->val>key)pre->left=p->right;
+		else pre->right=p->right;
+		delete p;
+	}else{
+		//下面注释掉的可以通过题目，但是我自己写的逻辑也没错但是过不了
+//		if(pre->val>key){
+//			pre->left=p->right;
+//		}
+//		else pre->right=p->right;
+//		auto pm=p->right;
+//		while(pm->left)pm=pm->left;
+//		pm->left=p->left;
+//		delete p;
+		auto pm=p->right;
+		while(pm->left){
+			pre=pm;
+			pm=pm->left;
+		}
+		swap(p->val,pm->val);
+		if(pm!=p->right)pre->left= pm->right;
+		else p->right=pm->right;
+		delete pm;
+	}
+	if(!newroot)return root;
+	auto ret=newroot->left;
+	delete newroot;
+	return ret;
+}
+TreeNode* rec_669(TreeNode*root,int low,int high){
+	if(!root)return nullptr;
+	if(root->val==low){
+		root->left= nullptr;
+		root->right= rec_669 (root->right,low, high);
+	}else if(root->val<low){
+		auto p=root;
+		while(p&&p->val<low)p=p->right;
+		return rec_669(p,low,high);
+	}else if(root->val==high){
+		root->right= nullptr;
+		root->left=rec_669(root->left,low,high);
+	}else if(root->val>high){
+		auto p=root;
+		while(p&&p->val>high)p=p->left;
+		return rec_669(p,low,high);
+	}else{
+		root->left=rec_669(root->left,low,high);
+		root->right=rec_669(root->right,low,high);
+	}return root;
+}
+TreeNode* trimBST(TreeNode* root, int low, int high) {
+	return rec_669(root,low,high);
+}
+TreeNode* rec_108(vector<int>&nums,int l,int r){
+	if(l>r)return nullptr;
+	int m=(l+r)/2;
+	auto root=new TreeNode(nums[m]);
+	root->left=rec_108(nums,l,m-1);
+	root->right=rec_108(nums,m+1,r);
+	return root;
+}
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+	return rec_108(nums,0,nums.size()-1);
+}
+void rec_538_1(TreeNode*root,vector<int>&traversal){
+	if(!root)return;
+	rec_538_1(root->left,traversal);
+	traversal.push_back (root->val);
+	rec_538_1(root->right,traversal);
+}
+void rec_538_2(TreeNode*root,const vector<int>&traversal,int& idx){
+	if(!root||idx==traversal.size())return;
+	rec_538_2(root->left,traversal,idx);
+	root->val=traversal[idx];
+	++idx;
+	rec_538_2(root->right,traversal,idx);
+}
+TreeNode* convertBST(TreeNode* root) {
+	vector<int>traversal;
+	rec_538_1(root,traversal);
+	for(int i=traversal.size()-2;i>=0;--i){
+		traversal[i]+=traversal[i+1];
+	}
+	int idx=0;
+	rec_538_2(root,traversal,idx);
+	return root;
+}
 int main () {
 	Date d1=(2023,4,27);
 	
