@@ -56,6 +56,49 @@ vector<string> letterCombinations(string digits) {
 	backtracking_17(ret,path,digits,0,board);
 	return ret;
 }
+void backtracking_39(vector<vector<int>>&ret,vector<int>&path,vector<int>&candidate,int sum,int target,int level){
+	if(sum==target){
+		ret.push_back (path);
+		return;
+	}
+	if(sum>target)return;
+	for(int i=level;i<candidate.size();++i){
+		if(candidate[i]+sum>target)return;
+		path.push_back (candidate[i]);
+		backtracking_39 (ret,path,candidate,sum+candidate[i],target,i);
+		path.pop_back();
+	}
+}
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+	sort(candidates.begin(),candidates.end());
+	vector<vector<int>>ret;
+	vector<int>path;
+	backtracking_39 (ret,path,candidates,0,target,0);
+	return ret;
+}
+void backtracking_40(vector<vector<int>>&ret,vector<int>&path,vector<int>&candidate,int sum,int target,int level){
+	if(sum>target)return;
+	if(sum==target){
+		ret.push_back (path);
+		return;
+	}
+	for(int i=level;i<candidate.size();){
+		if(sum+candidate[i]>target)return;
+		path.push_back (candidate[i]);
+		backtracking_40 (ret,path,candidate,sum+candidate[i],target,i+1);
+		int tmp=path.back();
+		path.pop_back();
+		while(i<candidate.size()&&candidate[i]==tmp)++i;
+		
+	}
+}
+vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+	sort(candidates.begin(),candidates.end());
+	vector<vector<int>>ret;
+	vector<int>path;
+	backtracking_40 (ret,path,candidates,0,target,0);
+	return ret;
+}
 int main(){
 	auto ret= letterCombinations ("23");
 }
