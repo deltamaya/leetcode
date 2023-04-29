@@ -99,6 +99,64 @@ vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
 	backtracking_40 (ret,path,candidates,0,target,0);
 	return ret;
 }
+bool IsPalindromeString(const string& str){
+	int l=0,r=str.size()-1;
+	while(l<=r){
+		if(str[l]==str[r]){
+			++l;--r;
+		}else{
+			return false;
+		}
+	}
+	return true;
+}
+void BackTracking_131(vector<vector<string>>&ret,vector<string>&path,string s,int begin,int end){
+	if(begin>end){
+		ret.push_back (path);
+		return;
+	}
+	for(int i=begin;i<=end;++i){
+		if( IsPalindromeString (s.substr (begin,i-begin+1))){
+			path.push_back (s.substr (begin,i-begin+1));
+			BackTracking_131 (ret,path,s,i+1,end);
+			path.pop_back();
+		}
+	}
+}
+vector<vector<string>> partition(string s) {
+	vector<vector<string>>ret;
+	vector<string>path;
+	BackTracking_131 (ret,path,s,0,s.size()-1);
+	return ret;
+}
+void BackTracking_93(vector<string>&ret,vector<string>&path,const string& s,int begin,int end){
+	if(path.size()>4)return;
+	if(begin>end&&path.size()==4){
+		string tmp;
+		for(auto& e:path){
+			tmp+=(e+'.');
+		}
+		tmp.pop_back();
+		ret.push_back (tmp);
+		return;
+	}
+	for(int i=begin;i<=std::min(begin+2,int(s.size()-1));++i){
+		if(path.size()==4)break;
+		if(s.size()-i>3*(4-path.size()))continue;
+		if(s[begin]=='0'&&i!=begin)break;
+		if(stoi(s.substr (begin,i-begin+1))>255)continue;
+		path.push_back (s.substr (begin,i-begin+1));
+		BackTracking_93 (ret,path,s,i+1,end);
+		path.pop_back();
+	}
+}
+vector<string> restoreIpAddresses(string s) {
+	vector<string>ret;
+	vector<string>path;
+	BackTracking_93 (ret,path,s,0,s.size()-1);
+	return ret;
+}
 int main(){
-	auto ret= letterCombinations ("23");
+	auto ret= restoreIpAddresses ("25525511135");
+	int a;
 }
