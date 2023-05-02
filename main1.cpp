@@ -156,6 +156,148 @@ vector<string> restoreIpAddresses(string s) {
 	BackTracking_93 (ret,path,s,0,s.size()-1);
 	return ret;
 }
+void BackTracking_78(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin){
+	ret.push_back (path);
+	if(path.size()==nums.size()){
+		return;
+	}
+	for(int i=begin;i<nums.size();++i){
+		path.push_back (nums[i]);
+		BackTracking_78 (ret,path,nums,i+1);
+		path.pop_back();
+	}
+}
+vector<vector<int>> subsets(vector<int>& nums) {
+	vector<vector<int>>ret;
+	vector<int>path;
+	BackTracking_78(ret,path,nums,0);
+	return ret;
+}
+void BackTracking_90(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin){
+	ret.push_back (path);
+	if(path.size()==nums.size()){
+		return;
+	}
+	for(int i=begin;i<nums.size();){
+		path.push_back (nums[i]);
+		BackTracking_90 (ret,path,nums,i+1);
+		while(i<nums.size()&&nums[i]==path.back())++i;
+		path.pop_back();
+		
+	}
+}
+vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+	sort(nums.begin(),nums.end());
+	vector<vector<int>>ret;
+	vector<int>path;
+	BackTracking_90(ret,path,nums,0);
+	return ret;
+}
+struct HashFunc_t {
+	size_t operator() (const vector<int> &key) const {
+		std::hash<int> hasher;
+		size_t seed = 0;
+		for ( int i: key ) {
+			seed ^= hasher (i) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		}
+		return seed;
+	}
+};
+//void BackTracking_491(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin,unordered_map<vector<int>,bool, HashFunc_t>&mp){
+//	if(path.size()>=2&&!mp[path]) { ret.push_back (path); mp[path]=true;}
+//	for(int i=begin;i<nums.size();++i){
+//		if(!path.empty()&&nums[i]<path.back())continue;
+//		path.push_back (nums[i]);
+//		BackTracking_491(ret,path,nums,i+1,mp);
+//
+//		path.pop_back();
+//	}
+//}
+//
+//vector<vector<int>> findSubsequences(vector<int>& nums) {
+//	vector<vector<int>>ret;
+//	vector<int>path;
+//	unordered_map<vector<int>,bool,HashFunc_t>mp;
+//	BackTracking_491 (ret,path,nums,0,mp);
+//	return ret;
+//}
+
+void BackTracking_491(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin){
+	if(path.size()>=2)ret.push_back (path);
+	unordered_set<int>s;
+	for(int i=begin;i<nums.size();++i){
+		if(!path.empty()&&nums[i]<path.back()||s.find(nums[i])!=s.end())continue;
+		path.push_back (nums[i]);
+		s.insert (nums[i]);
+		BackTracking_491(ret,path,nums,i+1);
+		path.pop_back();
+	}
+}
+vector<vector<int>> findSubsequences(vector<int>& nums) {
+	vector<vector<int>>ret;
+	vector<int>path;
+	BackTracking_491 (ret,path,nums,0);
+	return ret;
+}
+void BackTracking_46(vector<vector<int>>&ret,vector<int>&path,vector<int>&nums,vector<bool>&used){
+	if(path.size()==nums.size()){
+		ret.push_back (path);
+		return;
+	}
+	for(int i=0;i<nums.size();++i){
+		if(used[i])continue;
+		path.push_back (nums[i]);
+		used[i]=true;
+		BackTracking_46 (ret,path,nums,used);
+		path.pop_back();
+		used[i]=false;
+	}
+	
+}
+vector<vector<int>> permute(vector<int>& nums) {
+	vector<vector<int>>ret;
+	vector<int>path;
+	vector<bool>used(nums.size(),false);
+	BackTracking_46 (ret,path,nums,used);
+	return ret;
+}
+
+
+//vector<vector<int>> permute(vector<int>& nums) {
+//	sort(nums.begin(),nums.end());
+//	vector<vector<int>>ret;
+//	do{
+//		ret.push_back(nums);
+//	}while((next_permutation (nums.begin(),nums.end())));
+//	return ret;
+//}
+void BackTracking_47(vector<vector<int>>&ret,vector<int>&path,vector<int>&nums,vector<bool>&used){
+	if(path.size()==nums.size()){
+		ret.push_back (path);
+		return;
+	}
+	for(int i=0;i<nums.size();){
+		while(i<nums.size()&&used[i])++i;
+		if(i>=nums.size())return;
+		path.push_back (nums[i]);
+		used[i]=true;
+		BackTracking_47 (ret,path,nums,used);
+		used[i]=false;
+		while(i<nums.size()&&path.back()==nums[i])++i;
+		path.pop_back();
+		
+		
+	}
+	
+}
+vector<vector<int>> permuteUnique(vector<int>& nums) {
+	vector<vector<int>>ret;
+	vector<int>path;
+	vector<bool>used(nums.size(),false);
+	sort(nums.begin(),nums.end());
+	BackTracking_47 (ret,path,nums,used);
+	return ret;
+}
 int main(){
 	auto ret= restoreIpAddresses ("25525511135");
 	int a;
