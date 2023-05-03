@@ -388,7 +388,23 @@ void solveSudoku(vector<vector<char>>& board) {
 	}
 	Sudoku (board,tmp,row,col);
 }
+//int main(){
+//	vector<vector<char>>board(9,vector<char>(9,'.'));
+//	solveSudoku (board);
+//}
+long long solve(int n){
+	if(n<2)return 1;
+	long long  pre=0,cur=1,next=0;
+	for(int i=0;i<n;++i){
+		next=pre+cur;
+		pre=cur;
+		cur=next;
+	}
+	return next;
+}
 int main(){
-	vector<vector<char>>board(9,vector<char>(9,'.'));
-	solveSudoku (board);
+	int n;
+	while(cin>>n){
+		cout<<solve(n)<<endl;
+	}
 }
