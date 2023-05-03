@@ -298,7 +298,97 @@ vector<vector<int>> permuteUnique(vector<int>& nums) {
 	BackTracking_47 (ret,path,nums,used);
 	return ret;
 }
+
+bool check_queen(vector<string>&board,int row,int col){
+	for(auto & i : board){
+		if(i[col]=='Q')return false;
+	}
+	int i=row,j=col;
+	while(i>0&&j>0){
+		--i;--j;
+	}
+	while(i>=0&&i<board.size()&&j>=0&&j<board[0].size()){
+		if(board[i][j]=='Q')return false;
+		++i;++j;
+	}
+	i=row;j=col;
+	while(i>0&&j<board[0].size()-1){
+		--i;++j;
+	}
+	while(i>=0&&i<board.size()&&j>=0&&j<board[0].size()){
+		if(board[i][j]=='Q')return false;
+		++i;--j;
+	}
+	return true;
+}
+void NQueens(vector<vector<string>>&ret,vector<string>&board,int line){
+	if(line==board.size()){
+		ret.push_back (board);
+		return;
+	}
+	for(int i=0;i<board[line].size();++i){
+		if(!check_queen(board,line,i))continue;
+		board[line][i]='Q';
+		NQueens (ret,board,line+1);
+		board[line][i]='.';
+	}
+}
+vector<vector<string>> solveNQueens(int n) {
+	vector<vector<string>>ret;
+	vector<string>board(n,string(n,'.'));
+	NQueens (ret,board,0);
+	return ret;
+}
+
+
+bool check_ok(vector<vector<char>>&board,int row,int col,int value){
+	for(int i=0;i<board.size();++i){
+		if(board[i][col]=='0'+value)return false;
+	}
+	for(int j=0;j<board[0].size();++j){
+		if(board[row][j]=='0'+value)return false;
+	}
+	int left=col/3,top=row/3;
+	for(int i=0;i<=2;++i){
+		for(int j=0;j<=2;++j){
+			if(board[top*3+i][left*3+j]=='0'+value)return false;
+		}
+	}
+	return true;
+}
+void Sudoku(vector<vector<char>>&ret,vector<vector<char>>&board,int row,int col){
+	int next_row=row,next_col=col;
+	for(int i=1;i<=9;++i){
+		if( !check_ok (board,row,col,i))continue;
+		board[row][col]='0'+i;
+		while(next_row<board.size()&&next_col<board[0].size()&&board[next_row][next_col]!='.'){
+			next_col++;
+			if(next_col>=board[0].size()){
+				next_row++;
+				next_col-=board[0].size();
+			}
+		}
+		if(next_row==board.size()){
+			ret=board;
+			return;
+		}
+		Sudoku(ret,board,next_row,next_col);
+		board[row][col]='.';
+	}
+}
+void solveSudoku(vector<vector<char>>& board) {
+	auto tmp=board;
+	int row=0,col=0;
+	while(row<board.size()&&col<board[0].size()&&board[row][col]!='.'){
+		col++;
+		if(col>=board[0].size()){
+			row++;
+			col-=board[0].size();
+		}
+	}
+	Sudoku (board,tmp,row,col);
+}
 int main(){
-	auto ret= restoreIpAddresses ("25525511135");
-	int a;
+	vector<vector<char>>board(9,vector<char>(9,'.'));
+	solveSudoku (board);
 }
