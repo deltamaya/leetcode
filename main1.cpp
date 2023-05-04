@@ -402,9 +402,166 @@ long long solve(int n){
 	}
 	return next;
 }
-int main(){
-	int n;
-	while(cin>>n){
-		cout<<solve(n)<<endl;
+string toHex(int num) {
+	if(!num)return "";
+	string ret;
+	unsigned int u_num=num;
+	while(u_num){
+		int tmp=u_num%16;
+		if(tmp<10){
+			ret.push_back ('0'+tmp);
+		}else{
+			ret.push_back ('a'+tmp-10);
+		}
+		u_num/=16;
 	}
+	reverse(ret.begin (),ret.end());
+	return ret;
+
+}
+int findContentChildren(vector<int>& g, vector<int>& s) {
+	sort(s.rbegin(),s.rend());
+	sort(g.rbegin(),g.rend());
+	int cnt=0;
+	int i=0;
+	for(auto cookie:s){
+		while(i<g.size()){
+			if(cookie>=g[i++]){
+				++cnt;
+				break;
+			}
+		}
+	}
+	return cnt;
+}
+int wiggleMaxLength(vector<int>& nums) {
+	if(nums.size()<2)return nums.size();
+	for(int i=1;i<nums.size();++i){
+		nums[i-1]-=nums[i];
+	}
+	nums.pop_back();
+	int begin=0;
+	for(begin=0;begin<nums.size();++begin){
+		if(nums[begin]!=0){
+			break;
+		}
+	}
+	if(begin==nums.size())return 1;
+	bool negative=nums[begin]<0;
+	int cnt=1;
+	for(int i=begin+1;i<nums.size();++i){
+		if(negative){
+			if(nums[i]>0){
+				negative=false;
+				++cnt;
+			}else{
+				continue;
+			}
+		}else{
+			if(nums[i]<0){
+				negative=true;
+				++cnt;
+			}else{
+				continue;
+			}
+		}
+	}
+	return ++cnt;
+	
+}
+int maxSubArray(vector<int>& nums) {
+	int ret=nums[0];
+	int sum=0;
+	for(int i=0;i<nums.size();++i){
+		sum+=nums[i];
+		if(sum<0){
+			sum=0;
+		}else{
+			ret=max(ret,sum);
+		}
+		ret=max(ret,nums[i]);
+	}
+	return ret;
+}
+int maxProfit(vector<int>& prices) {
+	int ret=0;
+	for(int i=1;i<prices.size();++i){
+		if(prices[i]-prices[i-1]>0){
+			ret+=prices[i]-prices[i-1];
+		}
+	}
+	return ret;
+}
+bool canJump(vector<int>& nums) {
+	int cover=0;
+	for(int i=0;i<=cover;++i){
+		cover=max(cover,i+nums[i]);
+		if(cover>=nums.size())return true;
+	}
+	return false;
+}
+int jump(vector<int>& nums) {
+	if(nums.size()<2)return nums.size()-1;
+	int cnt=0;
+	int i=0;
+	while(i<nums.size()){
+		int j=1;
+		int maxi=i+j;
+		if(i+nums[i]>=nums.size()-1){
+			++cnt;
+			break;
+		}
+		for(j=1;i+j<nums.size()&&j<=nums[i];++j){
+			if(i+j+nums[i+j]>=maxi+nums[maxi])maxi=i+j;
+		}
+		i=maxi;
+		++cnt;
+	}
+	return cnt;
+}
+int largestSumAfterKNegations(vector<int>& nums, int k) {
+	sort(nums.begin(),nums.end());
+	for(int i=0;k&&i<nums.size();++i){
+		if(nums[i]<0){
+			nums[i]=-nums[i];
+			--k;
+		}
+	}
+	
+	if(k) {
+		k%=2;
+		sort(nums.begin(),nums.end());
+		for(int i=0;i<k;++i){
+			nums[i]=-nums[i];
+		}
+	}
+	int sum=0;
+	for(auto &e:nums){
+		sum+=e;
+	}
+	return sum;
+}
+int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+	if( accumulate (gas.begin(),gas.end(),0)< accumulate (cost.begin(),cost.end(),0))return -1;
+	int begin=0;
+	int has=0;
+	int cur=0;
+	for(begin=0;begin<gas.size();++begin){
+		has=gas[begin];
+		cur=begin;
+		while(has>0&&has>=cost[cur]){
+			has-=cost[cur];
+			cur++;
+			if(cur>=gas.size())cur-=gas.size();
+			if(cur==begin)return begin;
+			has+=gas[cur];
+		}
+		begin=cur;
+	}
+	return -1;
+}
+int main(){
+	unsigned num=-1;
+	
+	cout<<num;
 }
