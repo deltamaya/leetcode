@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
+#define private public
 using namespace std;
+
 void backtracking_77(vector<vector<int>>&ret,vector<int>&path,int begin,int end,int k){
 	if(path.size()==k){
 		ret.push_back (path);
@@ -560,8 +562,67 @@ int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
 	}
 	return -1;
 }
-int main(){
-	unsigned num=-1;
+int candy(vector<int>& ratings) {
+	vector<int>candies(ratings.size(),1);
+	for(int i=1;i<candies.size();++i){
+		if(ratings[i]> ratings[i-1]){
+			candies[i]=candies[i-1]+1;
+		}
+	}
+	for(int i=candies.size()-2;i>=0;--i){
+		if(ratings[i]>ratings[i+1]){
+			candies[i]=max(candies[i+1]+1,candies[i]);
+		}
+	}
+	return accumulate (candies.begin(),candies.end(),0);
+}
+bool lemonadeChange(vector<int>& bills) {
+//	unordered_map<int ,int>change;
+int ten=0,five=0;
+	for(auto e:bills){
+		if(e==5){
+			++five;
+		}else if(e==10){
+			if(five--){
+				ten++;
+			}else return false;
+		}else{
+			if(ten>0&&five>0){
+				ten--;five--;
+			}else if(five>=3){
+				five-=3;
+			}else{
+				return false;
+			}
+			
+		}
+	}
+	return true;
+}
+//vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+//	sort(people.begin(),people.end(),[&](const vector<int>&a,const vector<int>&b){return a[0]>b[0]||(a[0]==b[0]&&a[1]<b[1]);});
+//	vector<vector<int>> ans;
+//	for (const vector<int>& person: people) {
+//		ans.insert(ans.begin() + person[1], person);
+//	}
+//	return ans;
+//}
+int findMinArrowShots(vector<vector<int>>& points) {
+	int cnt=1;
+	sort(points.begin(),points.end(),[&](const vector<int>&a,const vector<int>&b){return a[0]<b[0];});
+	int end;
+	end=points[0][1];
+	for(int i=0;i<points.size();++i){
+		if(points[i][0]>end){
+			++cnt;
+			end=points[i][1];
+		}
+		end=min(end,points[i][1]);
+	}
+	return cnt;
 	
-	cout<<num;
+}
+int main(){
+	vector<vector<int>>x({{3,9},{7,12},{3,8},{6,8},{9,10},{2,9},{0,9},{3,9},{0,6},{2,8}});
+	cout<< findMinArrowShots (x);
 }
