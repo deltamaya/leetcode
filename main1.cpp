@@ -1,7 +1,14 @@
 #include <bits/stdc++.h>
 #define private public
 using namespace std;
-
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode() : val(0), left(nullptr), right(nullptr) {}
+	TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 void backtracking_77(vector<vector<int>>&ret,vector<int>&path,int begin,int end,int k){
 	if(path.size()==k){
 		ret.push_back (path);
@@ -622,7 +629,127 @@ int findMinArrowShots(vector<vector<int>>& points) {
 	return cnt;
 	
 }
+int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+	sort(intervals.begin(),intervals.end());
+	int begin=intervals[0][0],end=intervals[0][1];
+	int cnt=0;
+	int i=1;
+	while(i<intervals.size()){
+		while(i<intervals.size()&&intervals[i][0]<end){
+			++cnt;
+			end=min(end,intervals[i][1]);
+			++i;
+		}
+		if(i<intervals.size()){
+			begin=intervals[i][0];
+			end=intervals[i][1];
+		}
+		++i;
+	}
+	return cnt;
+}
+string convert(const string&s){
+	string ret;
+	for(auto e:s){
+		if(e=='['){
+			ret.push_back ('{');
+		}else if(e==']'){
+			ret.push_back ('}');
+		}else{
+			ret.push_back (e);
+		}
+	}
+	cout<<ret;
+	return ret;
+}
+
+vector<int> partitionLabels(string s) {
+	vector<pair<int,int>>be(26,{-1,-1});
+	for(int i=0;i<s.size();++i){
+		if(be[s[i]-'a'].first==-1){
+			be[s[i]-'a'].first=i;
+		}
+		be[s[i]-'a'].second=i;
+	}
+	vector<int>ret;
+	sort(be.begin(),be.end());
+	int begin,end;
+	int i=0;
+	while(be[i].first==-1)++i;
+	begin=be[i].first;end=be[i].second;
+	while(i<26){
+		if(be[i].first>end){
+			ret.push_back (end-begin+1);
+			begin=be[i].first;
+		}
+		end=max(end,be[i].second);
+		++i;
+	}
+	ret.push_back (end-begin+1);
+	return ret;
+}
+vector<vector<int>> merge(vector<vector<int>>& intervals) {
+	sort(intervals.begin(),intervals.end());
+	int begin=intervals[0][0],end=intervals[0][1];
+	int i=0;
+	vector<vector<int>>ret;
+	while(i<intervals.size()){
+		if(intervals[i][0]>end){
+			ret.push_back ({begin,end});
+			begin=intervals[i][0];
+		}
+		end=max(end,intervals[i][1]);
+		++i;
+	}
+	ret.push_back ({begin, end});
+	return ret;
+}
+int monotoneIncreasingDigits(int n) {
+	string raw=to_string(n);
+	bool ok=true;
+	int i=0;
+	for(i=0;i<raw.size()-1;++i){
+		if(raw[i]>raw[i+1]){
+			ok=false;
+			break;
+		}
+	}
+	if(ok)return n;
+	while(i>0&&raw[i-1]==raw[i]){
+		--i;
+	}
+	--raw[i];
+	++i;
+	while(i<raw.size()){
+		raw[i++]='9';
+	}
+	if(raw[0]=='0')raw.erase(0,1);
+	return stoi(raw);
+}
+void rec_968(TreeNode*root,int&cnt){
+	if(!root||(!root->left&&!root->right))return;
+	rec_968 (root->left,cnt);
+	rec_968 (root->right,cnt);
+	
+	if(root->left&&root->left->val==1&&root->right&&root->right->val==1){
+		return;
+	}
+	if((root->left&&root->left->val==2)||(root->right&&root->right->val==2)){
+		root->val=1;
+	}
+	if((root->left&&root->left->val==0)||(root->right&&root->right->val==0)){
+		root->val=2;
+		++cnt;
+	}
+	
+}
+int minCameraCover(TreeNode* root) {
+	if(!root->left&&!root->right)return 1;
+	int cnt=0;
+	rec_968 (root,cnt);
+	if(root->val==0)++cnt;
+	return cnt;
+}
 int main(){
-	vector<vector<int>>x({{3,9},{7,12},{3,8},{6,8},{9,10},{2,9},{0,9},{3,9},{0,6},{2,8}});
-	cout<< findMinArrowShots (x);
+	cout<<monotoneIncreasingDigits(332);
 }
