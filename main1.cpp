@@ -750,6 +750,119 @@ int minCameraCover(TreeNode* root) {
 	if(root->val==0)++cnt;
 	return cnt;
 }
+int minCostClimbingStairs(vector<int>& cost) {
+	vector<int>dp(cost.size()+1,0);
+	for(int i=2;i<dp.size();++i){
+		dp[i]=min(dp[i-2]+cost[i-2],dp[i-1]+cost[i-1]);
+	}
+	return dp.back();
+}
+int uniquePaths(int m, int n) {
+	vector<vector<int>>dp(m,vector<int>(n,0));
+	for(int i=0;i<m;++i){
+		dp[i][0]=1;
+	}
+	for(int i=0;i<n;++i){
+		dp[0][i]=1;
+	}
+	for(int i=1;i<m;++i){
+		for(int j=1;j<n;++j){
+			dp[i][j]=dp[i-1][j]+dp[i][j-1];
+		}
+	}
+	return dp.back().back();
+}
+int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+	if(obstacleGrid.back().back()||obstacleGrid[0][0])return 0;
+	for(int i=0;i<obstacleGrid.size();++i){
+		for(int j=0;j<obstacleGrid[0].size();++j){
+			if(obstacleGrid[i][j]==1){
+				obstacleGrid[i][j]=-1;
+			}
+		}
+	}
+	auto &dp=obstacleGrid;
+	dp[0][0]=1;
+	for(int i=1;i<dp.size();++i){
+		if(dp[i][0]==-1)continue;
+		if(dp[i-1][0]!=-1){
+			dp[i][0]=1;
+		}else{
+			dp[i][0]=-1;
+		}
+	}
+	for(int j=1;j<dp[0].size();++j){
+		if(dp[0][j]==-1)continue;
+		if(dp[0][j-1]!=-1){
+			dp[0][j]=1;
+		}else{
+			dp[0][j]=-1;
+		}
+	}
+	for(int i=1;i<dp.size();++i){
+		for(int j=1;j<dp[0].size();++j){
+			if(dp[i][j]==-1)continue;
+			int value=0;
+			if(dp[i-1][j]!=-1)value+=dp[i-1][j];
+			if(dp[i][j-1]!=-1)value+=dp[i][j-1];
+			dp[i][j]=value;
+		}
+	}
+	return max(dp.back().back(),0);
+}
+//void BackTracking(int k,int n,int& sum,int& mult,int&ret){
+//	if(k>=n)return;
+//	if(sum==n&&k>=2){
+//		ret=max(mult,ret);
+//	}
+//	if(sum>=n)return;
+//	for(int i=1;i<n;++i){
+//		sum+=i;
+//		mult*=i;
+//		BackTracking(k+1,n,sum,mult,ret);
+//		sum-=i;
+//		mult/=i;
+//	}
+//}
+//int integerBreak(int n) {
+//	if(n<3)return 1;
+//	int mult=1,ret=0,sum=0;
+//	BackTracking(0,n,sum,mult,ret);
+//	return ret;
+//}
+//int integerBreak(int n) {
+//	if(n<3)return 1;
+//	if(n==3)return 2;
+//	int mod=n%3;
+//	int k=n/3;
+//	if(mod==1){
+//		return pow(3,k-1)*4;
+//	}else if(mod==2){
+//		return pow(3,k)*mod;
+//	}else{
+//		return pow(3,k);
+//	}
+//}
+
+int integerBreak(int n) {
+	vector<int>dp(n+3);
+	dp[0]=dp[1]=dp[2]=1;
+	dp[3]=2;
+	for(int i=4;i<=n;++i){
+		for(int k=2;k<i;++k){
+			int mod=n%k;
+			int div=n/k;
+			if(mod==1){
+				dp[i]=max(dp[i],int(pow(k,div-1)*(k+1)));
+			}else if(mod==0){
+				dp[i]=max(dp[i],int(pow(k,div)));
+			}else{
+				dp[i]=max(dp[i],int(pow(k,div)*mod));
+			}
+		}
+	}
+	return dp[n];
+}
 int main(){
-	cout<<monotoneIncreasingDigits(332);
+
 }
