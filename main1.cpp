@@ -976,14 +976,32 @@ public:
 	void f1(){
 		get_sum();
 	}
-	void f2(){
+	void f2()const{
 		foo();
 	}
-	Test(int test=1):
+	//construction method
+	//use "explicit" to avoid unintentional conversions
+	explicit Test(int test=1):
+	//initialize list
 	test_(test){
 		sum_+=i_;
 		++i_;
 	}
+	//copy construction
+	Test(const Test& another){
+		test_=another.test_;
+		cout<<"copy construction\n";
+	}
+	//destruction
+	~Test(){
+		cout<<"destruction\n";
+	}
+	//assignment
+	Test& operator=(const Test& another){
+		test_=another.test_;
+		cout<<"assignment\n";
+	}
+	
 	//static method have no "this" ptr
 	static void foo(){
 		cout<<"foo";
