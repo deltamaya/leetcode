@@ -984,6 +984,7 @@ public:
 	explicit Test(int test=1):
 	//initialize list
 	test_(test){
+		cout<<"construction\n";
 		sum_+=i_;
 		++i_;
 	}
@@ -1010,6 +1011,77 @@ public:
 		foo();
 		return sum_;
 	}
+	Test* GetAddr(){
+		return this;
+	}
 };
 int Test::sum_=0;
 int Test::i_=1;
+class Date{
+private:
+	int yy_;
+	int mm_;
+	int dd_;
+	static vector<int>day_of_month_;
+public:
+	Date(int yy,int mm,int dd):
+			yy_(yy),
+			mm_(mm),
+			dd_(dd){};
+	Date(const string& s):
+		yy_(stoi(s.substr(0, 4))),
+		mm_(stoi(s.substr(4,2))),
+		dd_(stoi(s.substr(6,2))){};
+	int operator-(const Date& sub)const;
+	bool operator>(const Date& d) const{
+		if(yy_>=d.yy_){
+			if(yy_==d.yy_){
+				if(mm_>=d.mm_){
+					if(mm_==d.mm_)return dd_>d.dd_;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	Date &operator++ (){
+		if(++dd_> GetMonthDay (yy_,mm_)){
+			dd_=1;
+			if(++mm_>12){
+				++yy_;mm_=1;
+			}
+		}
+		return *this;
+	}
+	static int GetMonthDay(int yy,int mm){
+		if(mm==2){
+			return ((yy%400==0)||(yy%4==0&&yy%100!=0))?29:28;
+		}
+		return day_of_month_[mm-1];
+	}
+	int DayOfYear()const{
+		int ret=0;
+		for(int i=1;i<mm_;++i){
+			ret+=GetMonthDay(yy_,i);
+		}
+		ret+=dd_;
+		return ret;
+	}
+};
+int Date::operator-(const Date& d)const{
+	int ret=0;
+	Date tmp(d);
+	if(*this>d){
+		
+		while(*this>tmp){
+			++ret;++tmp;
+		}
+	}else{
+		tmp=*this;
+		while(d>tmp){
+			++tmp;++ret;
+		}
+	}
+	return ret+1;
+}
+vector<int> Date::day_of_month_={31,28,31,30,31,30,31,31,30,31,30,31};

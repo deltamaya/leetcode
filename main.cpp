@@ -881,30 +881,30 @@ public:
 		return *this;
 	}
 	
-	bool operator>(const Date& d){
+	bool operator>(const Date& d) const{
 		if(yy_>=d.yy_&&mm_>=d.mm_&&dd_>d.dd_){
 			return true;
 		}
 		return false;
 	}
 	
-	bool operator==(const Date& d){
+	bool operator==(const Date& d) const{
 		return (yy_==d.yy_&&mm_==d.mm_&&dd_==d.dd_);
 	}
 	// >=运算符重载
-	bool operator >= (const Date& d){
+	bool operator >= (const Date& d)const{
 		return *this>d||*this==d;
 	}
 	// <运算符重载
-	bool operator< (const Date& d){
+	bool operator< (const Date& d)const{
 		return !(*this>=d);
 	}
 	// <=运算符重载
-	bool operator<= (const Date& d){
+	bool operator<= (const Date& d)const{
 		return (*this<d)||(*this==d);
 	}
 	// !=运算符重载
-	bool operator != (const Date& d){
+	bool operator != (const Date& d)const{
 		return !(*this==d);
 	}
 	// 日期-日期 返回天数
