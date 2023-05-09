@@ -223,13 +223,13 @@ vector<vector<int>> fourSum(vector<int>& nums, int target) {
 	}
 	return ret;
 }
-ostream& operator<<(ostream&os,const vector<int>&v){
-	for(auto e:v){
-		os<<e<<' ';
-	}
-	os<<endl;
-	return os;
-}
+//ostream& operator<<(ostream&os,const vector<int>&v){
+//	for(auto e:v){
+//		os<<e<<' ';
+//	}
+//	os<<endl;
+//	return os;
+//}
 int KMP(const string& str,const string& target){
 	vector<int>next;
 	for(int i=0;i<target.size();++i){

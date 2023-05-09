@@ -844,6 +844,7 @@ int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
 //	}
 //}
 
+
 int integerBreak(int n) {
 	vector<int>dp(n+3);
 	dp[0]=dp[1]=dp[2]=1;
@@ -861,8 +862,114 @@ int integerBreak(int n) {
 			}
 		}
 	}
+	dp.push_back (1);
 	return dp[n];
 }
-int main(){
+//void BackTracking_416(vector<int>&nums,int target,int& sum,int begin,bool& ret){
+//	if(ret)return;
+//	for(int i=begin;i>=0;--i){
+//		sum+=nums[i];
+//		if(sum==target){
+//			ret=true;
+//			return;
+//		}else if(sum>target){
+//			sum-=nums[i];
+//			continue;
+//		}
+//		BackTracking_416 (nums,target,sum,i-1,ret);
+//		sum-=nums[i];
+//	}
+//}
+//bool canPartition(vector<int>& nums) {
+//	auto total=accumulate(nums.begin(), nums.end(), 0);
+//	if( total % 2 == 1)return false;
+//	vector<int>dp(nums.size());
+//	sort(nums.begin(),nums.end());
+//	int sum=0;
+//	bool ret=false;
+//	BackTracking_416 (nums,total/2,sum,nums.size()-1,ret);
+//	return ret;
+//}
+//
 
+
+bool canPartition(vector<int>& nums) {
+	int total= accumulate(nums.begin(),nums.end(),0);
+	if(total%2)return false;
+	vector<int>dp(total/2+1,0);
+	for(auto e:nums){
+		for( int j= dp.size() - 1; j >=e; --j){
+			dp[j]=max(dp[j - e] + e, dp[j]);
+			if(dp[j]==total/2)return true;
+		}
+	}
+	return false;
+}
+
+ostream& operator<<(ostream&os ,const vector<int>&v){
+	for(auto e:v){
+		os<<e<<' ';
+	}
+	os<<endl;
+	return os;
+}
+int lastStoneWeightII(vector<int>& stones) {
+	int sum=accumulate(stones.begin(),stones.end(),0);
+	vector<int>dp(sum/2+2,0);
+	int total=sum;
+	sum=0;
+	for(auto stone:stones){
+		for(int j=dp.size()-1;j>stone;--j){
+			dp[j]=max(dp[j-stone]+stone,dp[j]);
+			sum=max(dp[j],sum);
+		}
+	}
+	return total-sum-sum;
+}
+int findTargetSumWays(vector<int>& nums, int target) {
+	int cnt=0;
+	int total= accumulate(nums.begin(),nums.end(),0);
+	if(total<target||(total-target)%2)return 0;
+	vector<int>dp((total-target)/2+1,0);
+	dp[0]=1;
+	for(auto e:nums){
+		for(int j=dp.size()-1;j>=e;--j){
+			dp[j]+=dp[j-e];
+		}
+		cout<<dp;
+	}
+	return dp.back();
+}
+int findMaxForm(vector<string>& strs, int m, int n) {
+	vector<pair<int,int>>nums;
+	for(auto &s:strs){
+		int m=0,n=0;
+		for(auto c:s){
+			if(c=='0')++m;
+			if(c=='1')++n;
+		}
+		nums.push_back({m,n});
+	}
+	vector<vector<int>>dp(m+1,vector<int>(n+1,0));
+	for(auto e:nums){
+		for(int i=m;i>=0;--i){
+			for(int j=n;j>=0;--j){
+				if(i-e.first<0||j-e.second<0){
+					continue;
+				}
+				dp[i][j]=max(dp[i][j],dp[i-e.first][j-e.second]+1);
+			}
+		}
+//		for(auto &n:dp){
+//			cout<<n;
+//		}
+//		cout<<"---------------------------------------\n";
+	}
+	
+	return dp.back().back();
+}
+int main(){
+	//convert("[\"10\",\"0001\",\"111001\",\"1\",\"0\"]");
+	vector<string>nums={"10","0001","111001","1","0"};
+	cout<< findMaxForm(nums,5,3);
 }
