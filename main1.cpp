@@ -968,8 +968,30 @@ int findMaxForm(vector<string>& strs, int m, int n) {
 	
 	return dp.back().back();
 }
-int main(){
-	//convert("[\"10\",\"0001\",\"111001\",\"1\",\"0\"]");
-	vector<string>nums={"10","0001","111001","1","0"};
-	cout<< findMaxForm(nums,5,3);
-}
+class Test{
+	int test_=1;
+	static int sum_;
+	static int i_;
+public:
+	void f1(){
+		get_sum();
+	}
+	void f2(){
+		foo();
+	}
+	Test(int test=1):
+	test_(test){
+		sum_+=i_;
+		++i_;
+	}
+	//static method have no "this" ptr
+	static void foo(){
+		cout<<"foo";
+	}
+	static int get_sum(){
+		foo();
+		return sum_;
+	}
+};
+int Test::sum_=0;
+int Test::i_=1;
