@@ -55,19 +55,21 @@ bool wordBreak(string s, vector<string>& wordDict) {
 	}
 	return dp.back();
 }
+//int rob(vector<int>& nums) {
+//	if(nums.size()==1)return nums[0];
+////	vector<int>dp(nums.size()+1,0);
+//	int dp[101]={0};
+//	dp[1]=nums[0];dp[2]=nums[1];
+//	for(int i=3;i<=nums.size();++i){
+//		dp[i]=max(dp[i-2],dp[i-3])+nums[i-1];
+//	}
+//	return max(dp[nums.size()],dp[nums.size()-1]);
+//}
 int rob(vector<int>& nums) {
-	if(nums.size()==1)return nums[0];
-//	vector<int>dp(nums.size()+1,0);
-	int dp[101]={0};
-	dp[1]=nums[0];dp[2]=nums[1];
-	for(int i=3;i<=nums.size();++i){
-		dp[i]=max(dp[i-2],dp[i-3])+nums[i-1];
-	}
-	return max(dp[nums.size()],dp[nums.size()-1]);
+
 }
 int main(){
-	string s="leetcode";
-	vector<string>d={"leet","cod"};
-	cout<<wordBreak(s,d);
+	unsigned a=10;
+	cout<<(-1>a);
 	return 0;
 }
