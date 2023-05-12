@@ -118,24 +118,24 @@ vector<int> productExceptSelf(vector<int>& nums) {
 	ret[0]=last[1];ret[nums.size()-1]=pre[nums.size()-2];
 	return ret;
 }
-int lengthOfLIS(vector<int>& nums) {
-	vector<int>len;
-	int ret;
-	for(int i=0;i<nums.size();++i){
-		int j=i;
-		int maxlen=1;
-		while(j>=0){
-			if(nums[i]>nums[j]){
-				maxlen=max(maxlen,len[j]+1);
-				
-			}
-			ret=max(maxlen,ret);
-			--j;
-		}
-		len.push_back (maxlen);
-	}
-	return ret;
-}
+//int lengthOfLIS(vector<int>& nums) {
+//	vector<int>len;
+//	int ret;
+//	for(int i=0;i<nums.size();++i){
+//		int j=i;
+//		int maxlen=1;
+//		while(j>=0){
+//			if(nums[i]>nums[j]){
+//				maxlen=max(maxlen,len[j]+1);
+//
+//			}
+//			ret=max(maxlen,ret);
+//			--j;
+//		}
+//		len.push_back (maxlen);
+//	}
+//	return ret;
+//}
 int coinChange(vector<int>& coins, int amount) {
 	vector<int>ret(amount+1);
 	sort(coins.begin(),coins.end());
@@ -767,7 +767,7 @@ public:
 	int GetMonthDay (int year, int month){
 	if(month==2&&(year%400==0||year%4==0&&year%100==0))return 29;
 	static const int months[12]={31,28,31,30,31,30,31,31,30,31,30,31};
-	return months[month+1];
+	return months[month-1];
 }
 
 	// 全缺省的构造函数
