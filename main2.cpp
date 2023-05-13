@@ -89,32 +89,7 @@ struct TreeNode {
 //	return max({ret,dp.back(),dp[dp.size()-2]});
 //}
 
-//vector<vector<int>> rec(TreeNode*root){
-//	vector<vector<int>>ret(2,vector<int>(2));
-//	if(!root->left&&!root->right){
-//		ret[0][0]=0;ret[0][1]=root->val;
-//		ret[1][0]=ret[1][1]=0;
-//	}else if(!root->left&&root->right){
-//		auto tmp=rec(root->right);
-//		ret[0][0]=max(tmp[0][1],tmp[1][1]);
-//		ret[0][1]=max(tmp[0][0],tmp[1][0])+root->val;
-//		ret[1]=tmp[0];
-//	}else if(root->left&&!root->right){
-//		auto tmp=rec(root->left);
-//		ret[0]=tmp[1];
-//		ret[1]=tmp[0]+root->val;
-//	}else{
-//		auto l=rec(root->left);
-//		auto r=rec(root->right);
-//		ret[0]=l[1]+r[1];
-//		ret[1]=l[0]+r[0]+root->val;
-//	}
-//	return ret;
-//}
-//int rob(TreeNode* root) {
-//	auto ret=rec(root);
-//	return max(ret[0],ret[1]);
-//}
+
 int lengthOfLIS(vector<int>& nums) {
 	int len=1;
 	int end=0;
@@ -130,6 +105,53 @@ int lengthOfLIS(vector<int>& nums) {
 		}
 	}
 	return len;
+}
+vector<int> rec(TreeNode*root){
+	vector<int>ret(2,0);
+	if(!root->left&&!root->right){
+		ret[1]=root->val;
+	}else if(root->left&&!root->right){
+		auto next=rec(root->left);
+		ret[1]=next[0]+root->val;
+		ret[0]=max(next[0],next[1]);
+	}else if(!root->left&&root->right){
+		auto next=rec(root->right);
+		ret[1]=next[0]+root->val;
+		ret[0]=max(next[0],next[1]);
+	}else{
+		auto l=rec(root->left);
+		auto r=rec(root->right);
+		ret[1]=l[0]+r[0]+root->val;
+		ret[0]=max({l[0]+r[0],l[0]+r[1],l[1]+r[0],l[1]+r[1]});
+	}
+	return ret;
+}
+int rob(TreeNode* root) {
+	auto ret=rec(root);
+	return max(ret[0],ret[1]);
+}
+//int maxProfit(vector<int>& prices) {
+//	if(prices.size()==1)return 0;
+//	vector<int>dp(prices.size());
+//	dp[0]=dp[1]=prices[0];
+//	int ret=0;
+//	for(int i=1;i<prices.size();++i){
+//		ret=max(prices[i]-dp[i-1],ret);
+//		dp[i]=min(dp[i-1],prices[i]);
+//	}
+//	return ret;
+//}
+int maxProfit(vector<int>& prices) {
+	int buy1,buy2,sell1,sell2;
+	buy1=-prices[0];sell1=0;
+	buy2=-prices[0];sell2=0;
+	for(int i=1;i<prices.size();++i){
+		buy1=max(buy1,-prices[i]);
+		sell1=max(sell1,buy1+prices[i]);
+		buy2=max(buy2,sell1-prices[i]);
+		sell2=max(buy2+prices[i],sell2);
+	}
+	return sell2;
 }
 int main(){
 	vector<int>tmp{0,1,0,3,2,3};
