@@ -118,6 +118,7 @@ vector<int> productExceptSelf(vector<int>& nums) {
 	ret[0]=last[1];ret[nums.size()-1]=pre[nums.size()-2];
 	return ret;
 }
+
 //int lengthOfLIS(vector<int>& nums) {
 //	vector<int>len;
 //	int ret;

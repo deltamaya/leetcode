@@ -492,15 +492,15 @@ int maxSubArray(vector<int>& nums) {
 	}
 	return ret;
 }
-int maxProfit(vector<int>& prices) {
-	int ret=0;
-	for(int i=1;i<prices.size();++i){
-		if(prices[i]-prices[i-1]>0){
-			ret+=prices[i]-prices[i-1];
-		}
-	}
-	return ret;
-}
+//int maxProfit(vector<int>& prices) {
+//	int ret=0;
+//	for(int i=1;i<prices.size();++i){
+//		if(prices[i]-prices[i-1]>0){
+//			ret+=prices[i]-prices[i-1];
+//		}
+//	}
+//	return ret;
+//}
 bool canJump(vector<int>& nums) {
 	int cover=0;
 	for(int i=0;i<=cover;++i){
@@ -906,13 +906,7 @@ bool canPartition(vector<int>& nums) {
 	return false;
 }
 
-ostream& operator<<(ostream&os ,const vector<int>&v){
-	for(auto e:v){
-		os<<e<<' ';
-	}
-	os<<endl;
-	return os;
-}
+
 int lastStoneWeightII(vector<int>& stones) {
 	int sum=accumulate(stones.begin(),stones.end(),0);
 	vector<int>dp(sum/2+2,0);
@@ -936,7 +930,7 @@ int findTargetSumWays(vector<int>& nums, int target) {
 		for(int j=dp.size()-1;j>=e;--j){
 			dp[j]+=dp[j-e];
 		}
-		cout<<dp;
+//		cout<<dp;
 	}
 	return dp.back();
 }
@@ -1001,6 +995,7 @@ public:
 	Test& operator=(const Test& another){
 		test_=another.test_;
 		cout<<"assignment\n";
+		return *this;
 	}
 	
 	//static method have no "this" ptr

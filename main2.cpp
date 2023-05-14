@@ -91,44 +91,56 @@ struct TreeNode {
 
 
 int lengthOfLIS(vector<int>& nums) {
-	int len=1;
-	int end=0;
-	vector<int>inc(nums.size());
-	inc[0]=nums[0];
-	for(int i=1;i<nums.size();++i){
-		if(nums[i]>inc[end]){
-			inc[++end]=nums[i];
-			++len;
+	vector<int>tmp;
+	for(auto val:nums){
+		auto iter= lower_bound(tmp.begin(),tmp.end(),val);
+		if(iter==tmp.end()){
+			tmp.push_back(val);
 		}else{
-			end=lower_bound(inc.begin(),inc.begin()+end+1,nums[i])-inc.begin();
-			inc[end]=nums[i];
+			*iter=val;
 		}
 	}
-	return len;
+	return tmp.size();
 }
-vector<int> rec(TreeNode*root){
+vector<int> rec_tr(TreeNode*root){
 	vector<int>ret(2,0);
 	if(!root->left&&!root->right){
 		ret[1]=root->val;
 	}else if(root->left&&!root->right){
-		auto next=rec(root->left);
+		auto next=rec_tr(root->left);
 		ret[1]=next[0]+root->val;
 		ret[0]=max(next[0],next[1]);
 	}else if(!root->left&&root->right){
-		auto next=rec(root->right);
+		auto next=rec_tr(root->right);
 		ret[1]=next[0]+root->val;
 		ret[0]=max(next[0],next[1]);
 	}else{
-		auto l=rec(root->left);
-		auto r=rec(root->right);
+		auto l=rec_tr(root->left);
+		auto r=rec_tr(root->right);
 		ret[1]=l[0]+r[0]+root->val;
 		ret[0]=max({l[0]+r[0],l[0]+r[1],l[1]+r[0],l[1]+r[1]});
 	}
 	return ret;
 }
 int rob(TreeNode* root) {
-	auto ret=rec(root);
+	auto ret=rec_tr(root);
 	return max(ret[0],ret[1]);
+}
+
+ostream& operator<<(ostream&os ,const vector<int>&v){
+	for(auto e:v){
+		//os<<e<<' ';
+		printf("%3d ",e);
+	}
+	os<<endl;
+	return os;
+}
+ostream& operator<<(ostream& os,const vector<vector<int>>&m){
+	for(auto e:m){
+		os<<e;
+	}
+	cout<<endl;
+	return os;
 }
 //int maxProfit(vector<int>& prices) {
 //	if(prices.size()==1)return 0;
@@ -141,20 +153,72 @@ int rob(TreeNode* root) {
 //	}
 //	return ret;
 //}
-int maxProfit(vector<int>& prices) {
-	int buy1,buy2,sell1,sell2;
-	buy1=-prices[0];sell1=0;
-	buy2=-prices[0];sell2=0;
+
+
+//int maxProfit(vector<int>& prices) {
+//	int buy1,buy2,sell1,sell2;
+//	buy1=-prices[0];sell1=0;
+//	buy2=-prices[0];sell2=0;
+//	for(int i=1;i<prices.size();++i){
+//		buy1=max(buy1,-prices[i]);
+//		sell1=max(sell1,buy1+prices[i]);
+//		buy2=max(buy2,sell1-prices[i]);
+//		sell2=max(buy2+prices[i],sell2);
+//	}
+//	return sell2;
+//}
+
+
+//int maxProfit(int k, vector<int>& prices) {
+//	vector<vector<int>>dp(2*k,vector<int>(prices.size(),0));
+//	for(int i=0;i<2*k;++i){
+//		if(i%2==0){
+//			dp[i][0]=-prices[0];
+//		}
+//	}
+//	for(int i=1;i<prices.size();++i){
+//		dp[0][i]=max(dp[0][i-1],-prices[i]);
+//	}
+//	for(int i=1;i<prices.size();++i){
+//		for(int j=1;j<2*k;++j){
+//			if(j%2==0){
+//				dp[j][i]=max(dp[j-1][i]-prices[i],dp[j][i-1]);
+//			}else{
+//				dp[j][i]=max(dp[j][i-1],dp[j-1][i]+prices[i]);
+//			}
+//		}
+//		//cout<<dp;
+//	}
+//	return dp.back().back();
+//}
+
+//int maxProfit(vector<int>& prices) {
+//	int n=prices.size()-1;
+//	vector<vector<int>>dp(3,vector<int>(prices.size(),0));
+//	dp[0][0]=-prices[0];
+//	//dp[0][i] having stock
+//	//dp[1][i] not having stock and in freeze
+//	//dp[2][i] not having stock and not in freeze
+//	for(int i=1;i<prices.size();++i){
+//		dp[0][i]=max(dp[2][i-1]-prices[i],dp[0][i-1]);
+//		dp[1][i]=max(dp[0][i-1]+prices[i],dp[1][i-1]);
+//		dp[2][i]=max(dp[1][i-1],dp[2][i-1]);
+//	}cout<<dp<<endl;
+//	return max({dp[0][n],dp[1][n],dp[2][n]});
+//}
+
+int maxProfit(vector<int>& prices, int fee) {
+	vector<vector<int>>dp(2,vector<int>(prices.size(),0));
+	dp[0][0]=-prices[0];
 	for(int i=1;i<prices.size();++i){
-		buy1=max(buy1,-prices[i]);
-		sell1=max(sell1,buy1+prices[i]);
-		buy2=max(buy2,sell1-prices[i]);
-		sell2=max(buy2+prices[i],sell2);
+		dp[0][i]=max(dp[0][i-1],dp[1][i-1]-prices[i]);
+		dp[1][i]=max(dp[1][i-1],dp[0][i-1]+prices[i]-fee);
 	}
-	return sell2;
+//	cout<<dp;
+	return dp.back().back();
 }
 int main(){
-	vector<int>tmp{0,1,0,3,2,3};
-	cout<<lengthOfLIS(tmp)<<endl;
+	vector<int>tmp{1,3,7,5,10,3};
+	cout<<maxProfit(tmp,3)<<endl;
 	return 0;
 }
