@@ -217,8 +217,80 @@ int maxProfit(vector<int>& prices, int fee) {
 //	cout<<dp;
 	return dp.back().back();
 }
+int findLengthOfLCIS(vector<int>& nums) {
+	int len=1,ret=1;
+	for(int i=1;i<nums.size();++i){
+		if(nums[i]>nums[i-1]){
+			++len;
+		}else{
+			ret=max(ret,len);
+			len=1;
+		}
+	}
+	return max(ret,len);
+}
+//int findLength(vector<int>& nums1, vector<int>& nums2) {
+//	int n=nums1.size(),m=nums2.size();
+//	int ret=0;
+//	vector<vector<int>>dp(n,vector<int>(m,0));
+//	for(int i=0;i<n;++i){
+//		for(int j=0;j<m;++j){
+//			if(nums1[i]==nums2[j])dp[i][j]=1;
+//			ret=max(ret,dp[i][j]);
+//		}
+//	}
+////	cout<<dp<<endl;
+//	for(int i=1;i<n;++i){
+//		for(int j=1;j<m;++j){
+//			if(nums1[i]==nums2[j])dp[i][j]=dp[i-1][j-1]+1;
+//			ret=max(ret,dp[i][j]);
+//		}
+//	}
+////	cout<<dp<<endl;
+//	return ret;
+//}
+
+int findLength(vector<int>&A,vector<int>&B){
+	int n=A.size(),m=B.size();
+	int ret=0;
+	for(int offset=-(n-1);offset<m;++offset){
+		int a_begin,b_begin,len;
+		a_begin=max(0,-offset);
+		b_begin=max(offset,0);
+		len=min(n-a_begin,m-b_begin);
+		int cnt=0;
+		for(int i=0;i<len;++i){
+			cnt=A[a_begin+i]==B[b_begin+i]?cnt+1:0;
+			ret=max(ret,cnt);
+		}
+	}
+	return ret;
+}
+int longestCommonSubsequence(string s1, string s2) {
+	vector<vector<int>>dp(s1.size(),vector<int>(s2.size(),0));
+	dp[0][0]=s1[0]==s2[0];
+	for(int i=1;i<s1.size();++i){
+		if(s1[i]==s2[0]) dp[i][0]=1;
+		else dp[i][0]=dp[i-1][0];
+	}
+	for(int i=1;i<s2.size();++i){
+		if(s2[i]==s1[0])dp[0][i]=1;
+		else dp[0][i]=dp[0][i-1];
+	}
+	cout<<dp<<endl;
+	for(int i=1;i<s1.size();++i){
+		for(int j=1;j<s2.size();++j){
+			dp[i][j]=dp[i-1][j-1];
+			if(s1[i]==s2[j])++dp[i][j];
+			dp[i][j]=max({dp[i][j],dp[i-1][j],dp[i][j-1]});
+		}
+	}
+	cout<<dp<<endl;
+	return dp.back().back();
+}
 int main(){
-	vector<int>tmp{1,3,7,5,10,3};
-	cout<<maxProfit(tmp,3)<<endl;
+	vector<int>tmp{1,2,3,2,8};
+	vector<int>tmp2{5,6,1,3,7};
+	cout<<longestCommonSubsequence("abc","def")<<endl;
 	return 0;
 }
