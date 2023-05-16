@@ -288,9 +288,109 @@ int longestCommonSubsequence(string s1, string s2) {
 	cout<<dp<<endl;
 	return dp.back().back();
 }
+class OnlyOnHeap{
+	int val_;
+	OnlyOnHeap(){
+	
+	}
+public:
+	OnlyOnHeap* getObj(){
+		auto ret=new OnlyOnHeap;
+		return ret;
+	}
+};
+class OnlyOnStack{
+	int val_;
+	void* operator new(size_t){
+	
+	}
+	void operator delete(void*){}
+};
+int maxUncrossedLines(vector<int>& nums1, vector<int>& nums2) {
+	int n=nums1.size(),m=nums2.size();
+	vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+	dp[1][1]=nums1[0]==nums2[0];
+	for(int i=1;i<n+1;++i){
+		for(int j=1;j<m+1;++j){
+			if(nums1[i-1]==nums2[j-1])
+				dp[i][j]=dp[i-1][j-1]+1;
+			else
+				dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+		}
+	}
+	cout<<dp<<endl;
+	return dp.back().back();
+}
+//int maxSubArray(vector<int>& nums) {
+//	int ret=nums[0];
+//	vector<int>dp(nums.size());
+//	dp[0]=nums[0];
+//	for(int i=1;i<nums.size();++i){
+//		dp[i]=max(dp[i-1]+nums[i],nums[i]);
+//		ret=max(ret,dp[i]);
+//	}
+//	return ret;
+//}
+
+//lower efficiency than above,idk y
+int maxSubArray(vector<int>& nums) {
+	int sum,ret;
+	sum=ret=nums[0];
+	for(int i=1;i<nums.size();++i){
+		sum=max(nums[i],sum+nums[i]);
+		ret=max(ret,sum);
+	}
+	return ret;
+}
+
+bool isSubsequence(string s, string t) {
+	int i=0;
+	for(auto ch:s){
+		while(i<t.size()&&ch!=t[i])++i;
+		if(i<t.size()&&ch==t[i])++i;
+		else return false;
+	}
+	return true;
+}
+int numDistinct(string s, string t) {
+	vector<vector<unsigned long long>>dp(s.size(),vector<unsigned long long>(t.size(),0));
+	//dp[i][j] -> how many methods from s[i-1] to t[j-1]
+	dp[0][0]=s[0]==t[0];
+	for(int i=1;i<s.size();++i){
+		dp[i][0]=dp[i-1][0]+(s[i]==t[0]?1:0);
+	}
+	for(int i=1;i<s.size();++i){
+		for(int j=1;j<t.size();++j){
+			if(j>i)continue;
+			if(s[i]==t[j]){
+				dp[i][j]=dp[i-1][j]+dp[i-1][j-1];
+			}else{
+				if(i==j)dp[i][j]=0;
+				else dp[i][j]=dp[i-1][j];
+			}
+		}
+	}
+//	cout<<dp<<endl;
+	return dp.back().back();
+}
+int minDistance(string word1, string word2) {
+	vector<vector<int>>dp(word1.size()+1,vector<int>(word2.size()+1,0));
+	for(int i=1;i<word1.size()+1;++i){
+		for(int j=1;j<word2.size()+1;++j){
+			if(word1[i-1]==word2[j-1]){
+				dp[i][j]=dp[i-1][j-1]+1;
+			}else{
+				dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+			}
+		}
+	}
+//	cout<<dp<<endl;
+	return word1.size()+word2.size()-2*dp.back().back();
+}
 int main(){
-	vector<int>tmp{1,2,3,2,8};
-	vector<int>tmp2{5,6,1,3,7};
-	cout<<longestCommonSubsequence("abc","def")<<endl;
+
+	vector<int>tmp{2,5,1,2,5};
+	vector<int>tmp2{10,5,2,1,5,2};
+	cout<<minDistance("plasma","altruism");
 	return 0;
 }

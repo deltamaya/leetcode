@@ -478,20 +478,20 @@ int wiggleMaxLength(vector<int>& nums) {
 	return ++cnt;
 	
 }
-int maxSubArray(vector<int>& nums) {
-	int ret=nums[0];
-	int sum=0;
-	for(int i=0;i<nums.size();++i){
-		sum+=nums[i];
-		if(sum<0){
-			sum=0;
-		}else{
-			ret=max(ret,sum);
-		}
-		ret=max(ret,nums[i]);
-	}
-	return ret;
-}
+//int maxSubArray(vector<int>& nums) {
+//	int ret=nums[0];
+//	int sum=0;
+//	for(int i=0;i<nums.size();++i){
+//		sum+=nums[i];
+//		if(sum<0){
+//			sum=0;
+//		}else{
+//			ret=max(ret,sum);
+//		}
+//		ret=max(ret,nums[i]);
+//	}
+//	return ret;
+//}
 //int maxProfit(vector<int>& prices) {
 //	int ret=0;
 //	for(int i=1;i<prices.size();++i){
