@@ -373,24 +373,84 @@ int numDistinct(string s, string t) {
 //	cout<<dp<<endl;
 	return dp.back().back();
 }
-int minDistance(string word1, string word2) {
-	vector<vector<int>>dp(word1.size()+1,vector<int>(word2.size()+1,0));
-	for(int i=1;i<word1.size()+1;++i){
-		for(int j=1;j<word2.size()+1;++j){
-			if(word1[i-1]==word2[j-1]){
-				dp[i][j]=dp[i-1][j-1]+1;
+//int minDistance(string word1, string word2) {
+//	vector<vector<int>>dp(word1.size()+1,vector<int>(word2.size()+1,0));
+//	for(int i=1;i<word1.size()+1;++i){
+//		for(int j=1;j<word2.size()+1;++j){
+//			if(word1[i-1]==word2[j-1]){
+//				dp[i][j]=dp[i-1][j-1]+1;
+//			}else{
+//				dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+//			}
+//		}
+//	}
+////	cout<<dp<<endl;
+//	return word1.size()+word2.size()-2*dp.back().back();
+//}
+int minDistance(string wd1, string wd2) {
+	int l1=wd1.size(),l2=wd2.size();
+	if(!l1||!l2)return max(l1,l2);
+	vector<vector<int>>dp(l1,vector<int>(l2,0));
+	dp[0][0]=wd1[0]!=wd2[0];
+	for(int i=1;i<l1;++i){
+		if(wd1[i]==wd2[0])dp[i][0]=i;
+		else dp[i][0]=dp[i-1][0]+1;
+	}
+	for(int j=1;j<l2;++j){
+		if(wd2[j]==wd1[0])dp[0][j]=j;
+		else dp[0][j]=dp[0][j-1]+1;
+	}
+	for(int i=1;i<l1;++i){
+		for(int j=1;j<l2;++j){
+			if(wd1[i]==wd2[j]){
+				dp[i][j]=dp[i-1][j-1];
 			}else{
-				dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+				dp[i][j]=min({dp[i-1][j-1]+1,dp[i-1][j]+1,dp[i][j-1]+1});
 			}
 		}
 	}
-//	cout<<dp<<endl;
-	return word1.size()+word2.size()-2*dp.back().back();
+	cout<<dp<<endl;
+	return dp.back().back();
+}
+
+
+//best answer!!100/88
+
+//int countSubstrings(string s) {
+//	int l=0,r=0;
+//	int ret=0;
+//	for(int i=0;i<s.size();++i){
+//		l=i;r=i;
+//		while(l>=0&&r<=s.size()&&s[l]==s[r]){
+//			++ret;--l;++r;
+//		}
+//		l=i-1;r=i;
+//		while(l>=0&&r<=s.size()&&s[l]==s[r]){
+//			++ret;--l;++r;
+//		}
+//	}
+//	return ret;
+//
+//}
+
+
+int longestPalindromeSubseq(string s) {
+	vector<vector<int>>dp(s.size(),vector<int>(s.size(),0));
+	for(int i=0;i<s.size();++i)dp[i][i]=1;
+	for(int i=s.size()-1;i>=0;--i){
+		for(int j=0;j<s.size();++j){
+			if(i>=j)continue;
+			if(s[i]==s[j])dp[i][j]=dp[i+1][j-1]+2;
+			else dp[i][j]=max(dp[i+1][j],dp[i][j-1]);
+		}
+	}
+//	cout<<dp;
+	return dp[0].back();
 }
 int main(){
 
 	vector<int>tmp{2,5,1,2,5};
 	vector<int>tmp2{10,5,2,1,5,2};
-	cout<<minDistance("plasma","altruism");
+	cout<<longestPalindromeSubseq("cbbd");
 	return 0;
 }
