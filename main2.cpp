@@ -481,21 +481,190 @@ public:
 		cout<<"D R E\n";
 	}
 };
+vector<int> dailyTemperatures(vector<int>& temperatures) {
+	stack<int>st;
+	vector<int>ret(temperatures.size(),0);
+	for(int i=0;i<temperatures.size();++i){
+		if(st.empty()||!st.empty()&&temperatures[st.top()]>=temperatures[i]){
+			st.push(i);
+		}else{
+			while(!st.empty()&&temperatures[i]>temperatures[st.top()]){
+				ret[st.top()]=i-st.top();
+				st.pop();
+			}
+			st.push(i);
+		}
+	}
+	return ret;
+}
+//int main(){
+//	Animal a1;
+//	Bird b1;
+//	a1.makeSound();
+//	b1.makeSound();
+//	b1.die();
+//	Animal* pa=&a1;
+//	pa=&b1;
+//	pa->makeSound();
+//	pa->die();
+//
+//	Bird* pb=&b1;
+//	b1.makeSound();
+//	pb= dynamic_cast<Bird *>(&a1);
+//	//cout<<pb->can_fly_;//crashed
+//	//pb->makeSound();//crashed
+//	return 0;
+//}
+
+
+vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+	unordered_map<int,int>mp;
+	stack<int>st;
+	for(int i=0;i<nums2.size();++i){
+		if(st.empty()||st.top()>=nums2[i]){
+			st.push(nums2[i]);
+		}else{
+			while(!st.empty()&&st.top()<nums2[i]){
+				mp[st.top()]=nums2[i];
+				st.pop();
+			}
+			st.push(nums2[i]);
+		}
+	}
+	for(auto& e:nums1){
+		if(mp.find(e)!=mp.end()){
+			e=mp[e];
+		}else{
+			e=-1;
+		}
+	}
+	return nums1;
+}
+vector<int> nextGreaterElements(vector<int>& nums) {
+	auto n=nums.size();
+	vector<int>ret(2*n,-1);
+	stack<int>st;
+	nums.insert(nums.end(),nums.begin(),nums.end());
+	for(int i=0;i<nums.size();++i){
+		if(st.empty()||nums[st.top()]>=nums[i]){
+			st.push(i);
+		}else{
+			while(!st.empty()&&nums[st.top()]<nums[i]){
+				ret[st.top()]=nums[i];
+				st.pop();
+			}
+			st.push(i);
+		}
+		//cout<<ret;
+	}
+	ret.erase(ret.begin()+n,ret.end());
+	return ret;
+}
+//int trap(vector<int>& height) {
+//	vector<int>pre(height.size(),-1);
+//	vector<int>next(height.size(),-1);
+//	stack<int>st;
+//	for(int i=0;i<height.size();++i){
+//		if(st.empty()||height[st.top()]>height[i]){
+//			st.push(i);
+//		}else{
+//			while(!st.empty()&&height[st.top()]<=height[i]){
+//				next[st.top()]=i;
+//				st.pop();
+//			}
+//			st.push(i);
+//		}
+//	}
+//	while(!st.empty())st.pop();
+//	for(int i=height.size()-1;i>=0;--i){
+//		if(st.empty()||height[st.top()]>=height[i]){
+//			st.push(i);
+//		}else{
+//			while(!st.empty()&&height[st.top()]<height[i]){
+//				pre[st.top()]=i;
+//				st.pop();
+//			}
+//			st.push(i);
+//		}
+//	}
+//	cout<<height;
+//	cout<<next;
+//	cout<<pre;
+//	int ret=0;
+//	int i=0;
+//	int last=0;
+//	while(i<height.size()){
+//		int begin=pre[i];
+//		int end=next[i];
+//		if(begin!=-1&&begin>=last&&begin<i-1){
+//			int h=height[i];
+//			for(int j=begin+1;j<i;++j){
+//				ret+=h-height[j];
+//			}
+//		}
+//		if(end!=-1&&end>i+1){
+//			int h=height[i];
+//			for(int j=i+1;j<end;++j){
+//				ret+=h-height[j];
+//			}
+//			last=i;
+//			i=end;
+//		}else{
+//
+//			++i;
+//		}
+//
+//		cout<<ret<<' ';
+//
+//	}
+//	cout<<endl;
+//	return ret;
+//}
+//int trap(vector<int>& height) {
+//	int ret=0;
+//	int i=0;
+//	int max_right=0;
+//	while(i<height.size()-1){
+//		max_right=i+1;
+//		for(int j=i+1;j<height.size();++j){
+//			if(height[j]>=height[max_right]){
+//				max_right=j;
+//			}
+//		}
+//		int h=min(height[i],height[max_right]);
+//		while(++i<max_right){
+//			ret+=h-height[i];
+//		}
+//	}
+//	return ret;
+//}
+int trap(vector<int>& height) {
+	stack<int>st;
+	int ret=0;
+	for(int i=0;i<height.size();++i){
+		if(st.empty()||height[st.top()]>=height[i]){
+			st.push(i);
+		}else{
+			int top=st.top();
+			int left=-1;
+			while(!st.empty()&&height[st.top()]<height[i]){
+				top=st.top();
+				st.pop();
+				if(st.empty())break;
+				left=st.top();
+				int h=min(height[i],height[left])-height[top];
+				ret+=h*(i-left-1);
+			}
+			
+			st.push(i);
+			//cout<<ret<<' ';
+		}
+	}
+//	cout<<endl;
+	return ret;
+}
 int main(){
-	Animal a1;
-	Bird b1;
-	a1.makeSound();
-	b1.makeSound();
-	b1.die();
-	Animal* pa=&a1;
-	pa=&b1;
-	pa->makeSound();
-	pa->die();
-	
-	Bird* pb=&b1;
-	b1.makeSound();
-	pb= dynamic_cast<Bird *>(&a1);
-	//cout<<pb->can_fly_;//crashed
-	//pb->makeSound();//crashed
+	vector<int>v{0,1,0,2,1,0,1,3,2,1,2,1};
+	cout<<trap(v);
 	return 0;
 }
