@@ -447,10 +447,55 @@ int longestPalindromeSubseq(string s) {
 //	cout<<dp;
 	return dp[0].back();
 }
-int main(){
+class Animal{
+public:
+	bool alive_;
+	double weight_;
+	Animal(bool alive=true,double weight=-1):
+		alive_(alive),weight_(weight){};
+	void die(){
+		alive_=false;
+	}
+	virtual void makeSound()const{
+		cout<<"make some sound\n";
+	}
+};
+class Fish:public Animal{
+public:
+	void makeSound()const override{
+		cout<<"gulugulu\n";
+	}
+};
+class Bird:public Animal{
 
-	vector<int>tmp{2,5,1,2,5};
-	vector<int>tmp2{10,5,2,1,5,2};
-	cout<<longestPalindromeSubseq("cbbd");
+public:
+	bool can_fly_;
+	Bird(bool can_fly=true):Animal(),can_fly_(can_fly){};
+	void makeSound()const override{
+		cout<<"zhazha\n";
+	}
+};
+class Pig:public Animal{
+public:
+	void makeSound()const override{
+		cout<<"D R E\n";
+	}
+};
+int main(){
+	Animal a1;
+	Bird b1;
+	a1.makeSound();
+	b1.makeSound();
+	b1.die();
+	Animal* pa=&a1;
+	pa=&b1;
+	pa->makeSound();
+	pa->die();
+	
+	Bird* pb=&b1;
+	b1.makeSound();
+	pb= dynamic_cast<Bird *>(&a1);
+	//cout<<pb->can_fly_;//crashed
+	//pb->makeSound();//crashed
 	return 0;
 }
