@@ -638,33 +638,83 @@ vector<int> nextGreaterElements(vector<int>& nums) {
 //	}
 //	return ret;
 //}
+//int trap(vector<int>& height) {
+//	stack<int>st;
+//	int ret=0;
+//	for(int i=0;i<height.size();++i){
+//		if(st.empty()||height[st.top()]>=height[i]){
+//			st.push(i);
+//		}else{
+//			int top=st.top();
+//			int left=-1;
+//			while(!st.empty()&&height[st.top()]<height[i]){
+//				top=st.top();
+//				st.pop();
+//				if(st.empty())break;
+//				left=st.top();
+//				int h=min(height[i],height[left])-height[top];
+//				ret+=h*(i-left-1);
+//			}
+//
+//			st.push(i);
+//			//cout<<ret<<' ';
+//		}
+//	}
+////	cout<<endl;
+//	return ret;
+//}
+
 int trap(vector<int>& height) {
 	stack<int>st;
 	int ret=0;
 	for(int i=0;i<height.size();++i){
-		if(st.empty()||height[st.top()]>=height[i]){
-			st.push(i);
-		}else{
+		while(!st.empty()&&height[st.top()]<height[i]){
 			int top=st.top();
-			int left=-1;
-			while(!st.empty()&&height[st.top()]<height[i]){
-				top=st.top();
-				st.pop();
-				if(st.empty())break;
-				left=st.top();
-				int h=min(height[i],height[left])-height[top];
-				ret+=h*(i-left-1);
-			}
-			
-			st.push(i);
-			//cout<<ret<<' ';
+			st.pop();
+			if(st.empty())break;
+			int left=st.top();
+			int h=min(height[left],height[i])-height[top];
+			ret+=h*(i-left-1);
 		}
+		st.push(i);
 	}
-//	cout<<endl;
 	return ret;
 }
+//int largestRectangleArea(vector<int>& heights) {
+//	int ret=heights[0];
+//	for(int i=0;i<heights.size();++i){
+//		int left=i;
+//		while(left>=0&&heights[left]>=heights[i])--left;
+//		int right=i;
+//		while(right<heights.size()&&heights[right]>=heights[i])++right;
+//		ret=max(ret,(right-left-1)*heights[i]);
+//	}
+//	return ret;
+//}
+int largestRectangleArea(vector<int>& heights) {
+	stack<int>st;
+	int ret=0;
+	heights.insert(heights.begin(),0);
+	heights.push_back(0);
+	for(int i=0;i<heights.size();++i){
+		while(!st.empty()&&heights[st.top()]>heights[i]){
+			int top=st.top();
+			st.pop();
+			if(st.empty()){
+				ret=max(ret,heights[top]*(top-1));
+			}else{
+				ret=max(ret,heights[top]*(i-st.top()-1));
+			}
+		}
+		st.push(i);
+		//cout<<ret<<' ';
+	}
+	//cout<<endl;
+	return ret;
+}
+
 int main(){
-	vector<int>v{0,1,0,2,1,0,1,3,2,1,2,1};
-	cout<<trap(v);
+	vector<int>v{0,2,1,2,0};
+	cout<<largestRectangleArea(v);
 	return 0;
 }
