@@ -713,8 +713,161 @@ int largestRectangleArea(vector<int>& heights) {
 	return ret;
 }
 
+struct ListNode {
+  int val;
+  ListNode *next;
+  ListNode() : val(0), next(nullptr) {}
+  ListNode(int x) : val(x), next(nullptr) {}
+  ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+ostream& operator<<(ostream&os,vector<ListNode*>&v){
+	for(auto head:v){
+		auto p=head;
+		while(p){
+			os<<p->val<<' ';
+			p=p->next;
+		}
+		cout<<endl;
+	}
+	return os;
+}ostream& operator<<(ostream&os,ListNode*&v){
+	auto p=v;
+	while(p){
+		os<<p->val<<' ';
+		p=p->next;
+	}
+	cout<<endl;
+	return os;
+}
+//ListNode* mergeKLists(vector<ListNode*>& lists) {
+//	unique_ptr<ListNode>newhead(new ListNode);
+//	bool ok=false;
+//	auto pre=newhead.get();
+//	vector<ListNode*>ptrs(lists.begin(),lists.end());
+//	while(!ok){
+//		int min_i=-1;
+//		ok=true;
+//		int min_value=INT_MAX;
+//		for(int i=0;i<ptrs.size();++i){
+//			if(!ptrs[i])continue;
+//			ok=false;
+//			if(ptrs[i]->val<min_value){
+//				min_i=i;
+//				min_value=ptrs[i]->val;
+//			}
+//		}
+//		if(min_i==-1)break;
+//		pre->next=ptrs[min_i];
+//		pre=pre->next;
+//		ptrs[min_i]=ptrs[min_i]->next;
+//	}
+//	//cout<<newhead->next;
+//	return newhead->next;
+//}
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+	map<int,int>mp;
+	unique_ptr<ListNode>newhead(new ListNode);
+	ListNode*p=newhead.get();
+	for(auto head:lists){
+		while(head){
+			mp[head->val]++;
+			head=head->next;
+		}
+	}
+	for(auto num:mp){
+		while(num.second--){
+			p->next=new ListNode(num.first);
+			p=p->next;
+		}
+	}
+	return newhead->next;
+}
+
+//time limit exceeded
+//string minWindow(string str, string t) {
+//	string s=str;
+//	if(s.size()<t.size())return "";
+//	vector<int>idx(t.size(),-1);
+//	bool ok=false;
+//	int begin=-1,len=INT_MAX;
+//	for(int i=0;i<t.size();++i){
+//		int j=idx[i]+1;
+//		while(j<s.size()&&s[j]!=t[i])++j;
+//		if(j<s.size()){
+//			s[j]='!';
+//			idx[i]=j;
+//		}else{
+//			return "";
+//		}
+//	}
+//	int max_idx=max_element(idx.begin(),idx.end())-idx.begin();
+//	int min_idx=min_element(idx.begin(),idx.end())-idx.begin();
+//	begin=idx[min_idx];
+//	len=idx[max_idx]-idx[min_idx]+1;
+//	while(!ok){
+//		ok=true;
+//		int i=min_idx;
+//		int j=idx[i]+1;
+//		while(j<s.size()&&s[j]!=t[i])++j;
+//		if(j<s.size()){
+//			s[j]='!';
+//
+//			idx[i]=j;
+//			max_idx=max_element(idx.begin(),idx.end())-idx.begin();
+//			min_idx=min_element(idx.begin(),idx.end())-idx.begin();
+//			ok=false;
+//			if(idx[max_idx]-idx[min_idx]+1<len){
+//				begin=idx[min_idx];
+//				len=idx[max_idx]-idx[min_idx]+1;
+//			}
+//		}
+//
+//	}
+//	return str.substr(begin,len);
+//}
+
+unordered_map <char, int> ori, cnt;
+
+bool check() {
+	for (const auto &p: ori) {
+		if (cnt[p.first] < p.second) {
+			return false;
+		}
+	}
+	return true;
+}
+
+string minWindow(string s, string t) {
+	for (const auto &c: t) {
+		++ori[c];
+	}
+	
+	int l = 0, r = -1;
+	int len = INT_MAX, ansL = -1, ansR = -1;
+	
+	while (r < int(s.size())) {
+		if (ori.find(s[++r]) != ori.end()) {
+			++cnt[s[r]];
+		}
+		while (check() && l <= r) {
+			if (r - l + 1 < len) {
+				len = r - l + 1;
+				ansL = l;
+			}
+			if (ori.find(s[l]) != ori.end()) {
+				--cnt[s[l]];
+			}
+			++l;
+		}
+	}
+	
+	return ansL == -1 ? string() : s.substr(ansL, len);
+}
+
+
 int main(){
-	vector<int>v{0,2,1,2,0};
-	cout<<largestRectangleArea(v);
+	
+	cout<<minWindow("cabwefgewcwaefgcf","cae");
 	return 0;
 }
