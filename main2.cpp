@@ -864,10 +864,85 @@ string minWindow(string s, string t) {
 	
 	return ansL == -1 ? string() : s.substr(ansL, len);
 }
-
-
+#include <cmath>
+string addStrings(string num1, string num2) {
+	string ret;
+	reverse(num1.begin(),num1.end());
+	reverse(num2.begin(),num2.end());
+	int carry=0;
+	int sub=abs(int(num1.size())-int(num2.size()));
+	if(num1.size()<num2.size())while(sub--)num1.push_back('0');
+	else while(sub--)num2.push_back('0');
+	for(int i=0;i<num1.size();++i){
+		int sum=carry+num1[i]-'0'+num2[i]-'0';
+		carry=sum/10;
+		ret.push_back('0'+sum%10);
+	}
+	if(carry)ret.push_back('0'+carry%10);
+	reverse(ret.begin(),ret.end());
+	return ret;
+}
+void reverseString(vector<char>& s) {
+	reverse(s.begin(),s.end());
+}
+int firstUniqChar(string s) {
+	vector<int>mp(26,-1);
+	for(int i=0;i<s.size();++i){
+		if(mp[s[i]-'a']==-1)mp[s[i]-'a']=i;
+		else if(mp[s[i]-'a']>=0)mp[s[i]-'a']=-2;
+		else continue;
+	}
+	int ret=INT_MAX;
+	for(int i=0;i<26;++i){
+		if(mp[i]<0)continue;
+		else ret=min(ret,mp[i]);
+	}
+	return ret==INT_MAX?-1:ret;
+}
+int maximalRectangle(vector<vector<char>>& matrix) {
+	int ret=0;
+	vector<vector<pair<int,int>>>dp(matrix.size(),vector<pair<int,int>>(matrix.size(),{0,0}));
+	if(matrix[0][0]){
+		dp[0][0]={0,0};
+	}else{
+		dp[0][0]={-1,-1};
+	}
+	for(int i=1;i<matrix.size();++i){
+		if(matrix[i][0])dp[i][0]={min(dp[i-1][0].first,i),0};
+		else dp[i][0]={-1,-1};
+	}
+	for(int j=1;j<matrix[0].size();++j){
+		if(matrix[0][j])dp[0][j]={0,min(dp[0][j-1].second,j)};
+		else dp[0][j]={-1,-1};
+	}
+	for(int i=1;i<matrix.size();++i){
+		for(int j=1;j<matrix[0].size();++j){
+			if(matrix[i][j]){
+				
+				ret=max(ret,(i-dp[i][j].first)*(j-dp[i][j].second));
+			}
+			else dp[i][j]={-1,-1};
+		}
+	}
+	return ret;
+}
+string largestNumber(vector<int>& nums) {
+	vector<string>tmp;
+	for(auto e:nums){
+		tmp.push_back(to_string(e));
+	}
+	sort(tmp.rbegin(),tmp.rend(),[](const string&a,const string&b){
+		return a+b<b+a;
+	});
+	string ret;
+	if(tmp[0][0]=='0')return "0";
+	for(auto& e:tmp){
+		ret+=e;
+	}
+	return ret;
+}
 int main(){
 	
-	cout<<minWindow("cabwefgewcwaefgcf","cae");
+	cout<<firstUniqChar("leetcode");
 	return 0;
 }
