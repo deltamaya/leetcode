@@ -900,31 +900,7 @@ int firstUniqChar(string s) {
 	return ret==INT_MAX?-1:ret;
 }
 int maximalRectangle(vector<vector<char>>& matrix) {
-	int ret=0;
-	vector<vector<pair<int,int>>>dp(matrix.size(),vector<pair<int,int>>(matrix.size(),{0,0}));
-	if(matrix[0][0]){
-		dp[0][0]={0,0};
-	}else{
-		dp[0][0]={-1,-1};
-	}
-	for(int i=1;i<matrix.size();++i){
-		if(matrix[i][0])dp[i][0]={min(dp[i-1][0].first,i),0};
-		else dp[i][0]={-1,-1};
-	}
-	for(int j=1;j<matrix[0].size();++j){
-		if(matrix[0][j])dp[0][j]={0,min(dp[0][j-1].second,j)};
-		else dp[0][j]={-1,-1};
-	}
-	for(int i=1;i<matrix.size();++i){
-		for(int j=1;j<matrix[0].size();++j){
-			if(matrix[i][j]){
-				
-				ret=max(ret,(i-dp[i][j].first)*(j-dp[i][j].second));
-			}
-			else dp[i][j]={-1,-1};
-		}
-	}
-	return ret;
+
 }
 string largestNumber(vector<int>& nums) {
 	vector<string>tmp;
@@ -941,6 +917,64 @@ string largestNumber(vector<int>& nums) {
 	}
 	return ret;
 }
+int find_depth(TreeNode*root){
+	if(!root)return 0;
+	return max(find_depth(root->left), find_depth(root->right))+1;
+}
+void rec_543(TreeNode*root,int&ret){
+	if(!root)return;
+	int left=find_depth(root->left);
+	int right=find_depth(root->right);
+	ret=max(ret,left+right);
+	rec_543(root->left,ret);
+	rec_543(root->right,ret);
+}
+int diameterOfBinaryTree(TreeNode* root) {
+    if(!root)return 0;
+    int ret=0;
+	rec_543(root,ret);
+    return ret;
+}
+int maxCoins(vector<int>& nums) {
+
+}
+#include <semaphore>
+
+class Foo {
+public:
+	condition_variable cv;
+	mutex mtx;
+	int k=0;
+	Foo() {
+	
+	}
+	
+	void first(function<void()> printFirst) {
+		unique_lock<mutex>lock(mtx);
+		// printFirst() outputs "first". Do not change or remove this line.
+		while(k!=0)cv.wait(lock);
+		printFirst();
+		k=1;
+		cv.notify_all();
+	}
+	
+	void second(function<void()> printSecond) {
+		unique_lock<mutex>lock(mtx);
+		// printSecond() outputs "second". Do not change or remove this line.
+		while(k!=1)cv.wait(lock);
+		printSecond();
+		k=2;
+		cv.notify_all();
+	}
+	
+	void third(function<void()> printThird) {
+		unique_lock<mutex>lock(mtx);
+		// printThird() outputs "third". Do not change or remove this line.
+		while(k!=2)cv.wait(lock);
+		printThird();
+		cv.notify_all();
+	}
+};
 int main(){
 	
 	cout<<firstUniqChar("leetcode");
