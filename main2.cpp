@@ -900,7 +900,32 @@ int firstUniqChar(string s) {
 	return ret==INT_MAX?-1:ret;
 }
 int maximalRectangle(vector<vector<char>>& matrix) {
-
+	auto m=matrix.size(),n=matrix[0].size();
+	vector<vector<int>>row(m,vector<int>(n,0)),col(m,vector<int>(n,0));
+	for(int i=0;i<m;++i){
+		for(int j=0;j<n;++j){
+			if(matrix[i][j]!='0'){
+				if(j)row[i][j]=row[i][j-1]+1;
+				else row[i][j]=1;
+				if(i)col[i][j]=col[i-1][j]+1;
+				else col[i][j]=1;
+			}else{
+				col[i][j]=0;
+				row[i][j]=0;
+			}
+		}
+	}
+	int ret=0;
+	stack<int>st;
+	for(int i=0;i<m;++i){
+		for(int j=0;j<n;++j){
+			if(matrix[i][j]=='0')continue;
+			vector<int>tmp;
+			for(int k=0;k<col[i][j];++k)tmp.push_back(row[i-k][j]);
+			ret=max(ret, largestRectangleArea(tmp));
+		}
+	}
+	return ret;
 }
 string largestNumber(vector<int>& nums) {
 	vector<string>tmp;
@@ -935,9 +960,7 @@ int diameterOfBinaryTree(TreeNode* root) {
 	rec_543(root,ret);
     return ret;
 }
-int maxCoins(vector<int>& nums) {
 
-}
 #include <semaphore>
 
 class Foo {
@@ -975,8 +998,118 @@ public:
 		cv.notify_all();
 	}
 };
+
+int maxCoins(vector<int>& nums) {
+	vector<vector<int>>dp(nums.size()+2,vector<int>(nums.size()+2,0));
+	vector<int>val(nums.size()+2,0);
+	val.front()=val.back()=1;
+	for(int i=0;i<nums.size();++i){
+		val[i+1]=nums[i];
+	}
+	for(int begin=nums.size()-1;begin>=0;--begin){
+		for(int end=begin+2;end<=nums.size()+1;++end){
+			for(int k=begin+1;k<end;++k){
+				dp[begin][end]=max(dp[begin][end],dp[begin][k]+dp[k][end]+val[begin]*val[end]*val[k]);
+			}
+		}
+	}
+	return dp[0].back();
+}
+//())())(()()())())(()(
+//110110111111111100110
+int longestValidParentheses(string s) {
+	vector<bool>valid(s.size(),false);
+	vector<int>idx;
+	for(int i=0;i<s.size();++i){
+		if(!idx.empty()&&s[i]==')'&&s[idx.back()]=='('){
+			valid[i]=true;
+			valid[idx.back()]=true;
+			idx.pop_back();
+		}else{
+			idx.push_back(i);
+		}
+	}
+	int cnt=0;
+	int ret=0;
+	for(int i=0;i<valid.size();++i){
+		if(!valid[i]){
+			ret=max(ret,cnt);
+			cnt=0;
+		}else{
+			++cnt;
+		}
+	}
+	ret=max(ret,cnt);
+	return ret;
+}
+
+
+//time limit exceeded
+//int subarraySum(vector<int>& nums, int k) {
+//	auto [sum,cnt,begin,len]=std::make_tuple(0,0,0,1);
+//	while(len<=nums.size()){
+//		for(int i=begin;i<len;++i)sum+=nums[i];
+//		while(begin+len-1<nums.size()){
+//			if(sum==k)++cnt;
+//			sum-=nums[begin];
+//			++begin;
+//			if(begin+len-1==nums.size())break;
+//			sum+=nums[begin+len-1];
+//		}
+//		++len;
+//		begin=0;
+//		sum=0;
+//	}
+//	return cnt;
+//}
+
+
+//memory limit exceeded
+//int subarraySum(vector<int>& nums, int k) {
+//	auto n=nums.size();
+//	auto cnt=0;
+//	vector<vector<int>>dp(n,vector<int>(n,0));
+//	dp[0][0]=nums[0];
+//	for(auto begin=0;begin<n;++begin){
+//		for(auto end=begin;end<n;++end){
+//			if(end)dp[begin][end]=dp[begin][end-1]+nums[end];
+//			if(dp[begin][end]==k)++cnt;
+//		}
+//	}
+//	return cnt;
+//}
+
+
+//time limit exceeded
+//int subarraySum(vector<int>& nums, int k) {
+//	vector<int>tmp;
+//	tmp.push_back(0);
+//	for(auto &e:nums){
+//		tmp.push_back(tmp.back()+e);
+//	}
+//	auto [cnt,sum,left,right]=std::make_tuple(0,0,0,0);
+//	for(left=0;left<=nums.size();++left){
+//		for(right=left+1;right<=nums.size();++right){
+//			if(tmp[right]-tmp[left]==k)++cnt;
+//		}
+//	}
+//	return cnt;
+//}
+
+
+int subarraySum(vector<int>& nums, int k) {
+	unordered_map<int,int>mp;
+	mp[0]=1;
+	auto [pre,cnt]=std::make_tuple(0,0);
+	for(auto&&e :nums){
+		pre+=e;
+		if(mp.find(pre-k)!=mp.end())cnt+=mp[pre-k];
+		mp[pre]++;
+	}
+	return cnt;
+}
 int main(){
-	
-	cout<<firstUniqChar("leetcode");
+	vector<int>tmp{1,1,1};
+	cout<<subarraySum(tmp,2);
 	return 0;
 }
