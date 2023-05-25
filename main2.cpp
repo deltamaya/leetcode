@@ -1108,8 +1108,55 @@ int subarraySum(vector<int>& nums, int k) {
 	}
 	return cnt;
 }
+int rec_124(TreeNode*root,int sum,int&ret){
+	if(!root)return 0;
+	sum+=root->val;
+	auto [l,r]=std::make_tuple(rec_124(root->left,0,ret),rec_124(root->right,0,ret));
+	sum+=max((l>0?l:0),(r>0?r:0));
+	ret=max(ret,(l>0?l:0)+(r>0?r:0)+root->val);
+	return sum;
+}
+int maxPathSum(TreeNode* root) {
+	int ret=root->val;
+	rec_124(root,0,ret);
+	return ret;
+}
+//s is target string, p is regex expression
+bool isMatch(string s, string p) {
+	int j=0;
+
+	for( int i = 0; i < p.size(); ++i ){
+		if(j==s.size())return false;
+		if( p[i] == '*' )continue;
+		if( p[i] != '.' ){
+			if( i + 1 < p.size() && p[i + 1] == '*' ){
+				while( j < s.size() && s[j] == p[i] )++j;
+				if(j== s.size())
+			}else{
+				if( s[j] != p[i] )break;
+				++j;
+			}
+		}else{
+			if( i + 1 < p.size() && p[i + 1] == '*' ){
+				if(i+2<p.size()){
+					while(j<s.size()&&s[j]!=p[i+2])++j;
+					if(j==s.size())return false;
+					++i;
+				}else{
+					j=s.size();
+					break;
+				}
+			}else{
+				++j;
+			}
+			
+		}
+	}
+	if(j==s.size())return true;
+	return false;
+}
 int main(){
 	vector<int>tmp{1,1,1};
-	cout<<subarraySum(tmp,2);
+	std::cout<<isMatch("aa","a*");
 	return 0;
 }
