@@ -1122,41 +1122,159 @@ int maxPathSum(TreeNode* root) {
 	return ret;
 }
 //s is target string, p is regex expression
-bool isMatch(string s, string p) {
-	int j=0;
+//bool isMatch(string s, string p) {
+//	int j=0;
+//
+//	for( int i = 0; i < p.size(); ++i ){
+//		if(j==s.size())return false;
+//		if( p[i] == '*' )continue;
+//		if( p[i] != '.' ){
+//			if( i + 1 < p.size() && p[i + 1] == '*' ){
+//				while( j < s.size() && s[j] == p[i] )++j;
+//				if(j== s.size());
+//			}else{
+//				if( s[j] != p[i] )break;
+//				++j;
+//			}
+//		}else{
+//			if( i + 1 < p.size() && p[i + 1] == '*' ){
+//				if(i+2<p.size()){
+//					while(j<s.size()&&s[j]!=p[i+2])++j;
+//					if(j==s.size())return false;
+//					++i;
+//				}else{
+//					j=s.size();
+//					break;
+//				}
+//			}else{
+//				++j;
+//			}
+//
+//		}
+//	}
+//	if(j==s.size())return true;
+//	return false;
+//}
+vector<string> removeInvalidParentheses(string s) {
 
-	for( int i = 0; i < p.size(); ++i ){
-		if(j==s.size())return false;
-		if( p[i] == '*' )continue;
-		if( p[i] != '.' ){
-			if( i + 1 < p.size() && p[i + 1] == '*' ){
-				while( j < s.size() && s[j] == p[i] )++j;
-				if(j== s.size())
-			}else{
-				if( s[j] != p[i] )break;
-				++j;
-			}
-		}else{
-			if( i + 1 < p.size() && p[i + 1] == '*' ){
-				if(i+2<p.size()){
-					while(j<s.size()&&s[j]!=p[i+2])++j;
-					if(j==s.size())return false;
-					++i;
-				}else{
-					j=s.size();
-					break;
-				}
-			}else{
-				++j;
-			}
-			
-		}
+}
+vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+
+}
+class Trie {
+	std::unordered_set<std::string>mp_;
+public:
+	Trie() {
+	
 	}
-	if(j==s.size())return true;
-	return false;
+	
+	void insert(string word) {
+		mp_.insert(static_cast<std::string&&>(word));
+	}
+	
+	bool search(string word) {
+		return ( mp_.find(static_cast<std::string&&>(word)) != mp_.end());
+	}
+	bool rec_trie(const std::string& element,const std::string& prefix,int index){
+		if(index==prefix.size())return true;
+		if(index==element.size())return false;
+		if(prefix[index]==element[index])return rec_trie(element,prefix,index+1);
+		else return false;
+	}
+	bool startsWith(string prefix) {
+		bool ret=false;
+		for(auto&& element:mp_){
+			if(ret)break;
+			if(element[0]==prefix[0]){
+				ret=rec_trie(element,prefix,1);
+			}
+		}
+		return ret;
+	}
+};
+class Codec {
+public:
+	
+	// Encodes a tree to a single string.
+	string serialize(TreeNode* root) {
+		std::queue<TreeNode*>q;
+		q.push(root);
+		std::string ret;
+		while(!q.empty()){
+			auto node=q.front();
+			q.pop();
+			if(node)ret+=std::to_string(node->val)+',';
+			else ret+="null,";
+			if(node){
+				q.push(node->left);
+				q.push(node->right);
+			}
+		}
+		return ret;
+	}
+	
+	// Decodes your encoded data to tree.
+	TreeNode* deserialize(const std::string& data) {
+		int i=0;
+		int quota=data.find(',');
+		if(data.substr(0,quota)=="null")return nullptr;
+		auto root=new TreeNode;
+		root->val=stoi(data.substr(0,quota));
+		i=quota+1;
+		std::queue<TreeNode*>q;
+		q.push(root);
+		while(!q.empty()){
+			auto node=q.front();
+			q.pop();
+			if(i>=data.size()){
+				break;
+			}
+			quota=data.find(',',i);
+			if(data.substr(i,quota-i)!="null"){
+				node->left=new TreeNode(stoi(data.substr(i,quota-i)));
+				q.push(node->left);
+			}
+			i=quota+1;
+			if(i>=data.size()){
+				break;
+			}
+			quota=data.find(',',i);
+			if(data.substr(i,quota-i)!="null"){
+				node->right=new TreeNode(stoi(data.substr(i,quota-i)));
+				q.push(node->right);
+			}
+			i=quota+1;
+		}
+		return root;
+	}
+};
+bool check(const std::unordered_map<char,int>&mp,const std::string&s){
+	unordered_map<char,int>tmp;
+	for(auto ch:s){
+		tmp[ch]++;
+	}
+	return (tmp==mp);
+}
+vector<int> findAnagrams(string s, string p) {
+	vector<int>ret;
+	int begin=0;
+	unordered_map<char,int>dict;
+	for(auto ch:p){
+		dict[ch]++;
+	}
+	while(begin+p.size()<=s.size()){
+		while(begin+p.size()<=s.size()&&dict.find(s[begin])==dict.end()){
+			++begin;
+		}
+		if(begin+p.size()<=s.size()&&check(dict,s.substr(begin,p.size()))){
+			ret.push_back(begin);
+		}
+		++begin;
+	}
+	return ret;
 }
 int main(){
-	vector<int>tmp{1,1,1};
-	std::cout<<isMatch("aa","a*");
+    auto ret=findAnagrams("abab","ab");
+	cout<<ret;
 	return 0;
 }

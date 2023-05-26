@@ -212,12 +212,12 @@ struct HashFunc_t {
 		return seed;
 	}
 };
-//void BackTracking_491(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin,unordered_map<vector<int>,bool, HashFunc_t>&mp){
-//	if(path.size()>=2&&!mp[path]) { ret.push_back (path); mp[path]=true;}
+//void BackTracking_491(vector<vector<int>>&ret,vector<int>&path,const vector<int>&nums,int begin,unordered_map<vector<int>,bool, HashFunc_t>&mp_){
+//	if(path.size()>=2&&!mp_[path]) { ret.push_back (path); mp_[path]=true;}
 //	for(int i=begin;i<nums.size();++i){
 //		if(!path.empty()&&nums[i]<path.back())continue;
 //		path.push_back (nums[i]);
-//		BackTracking_491(ret,path,nums,i+1,mp);
+//		BackTracking_491(ret,path,nums,i+1,mp_);
 //
 //		path.pop_back();
 //	}
@@ -226,8 +226,8 @@ struct HashFunc_t {
 //vector<vector<int>> findSubsequences(vector<int>& nums) {
 //	vector<vector<int>>ret;
 //	vector<int>path;
-//	unordered_map<vector<int>,bool,HashFunc_t>mp;
-//	BackTracking_491 (ret,path,nums,0,mp);
+//	unordered_map<vector<int>,bool,HashFunc_t>mp_;
+//	BackTracking_491 (ret,path,nums,0,mp_);
 //	return ret;
 //}
 
