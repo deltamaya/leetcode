@@ -1158,9 +1158,7 @@ int maxPathSum(TreeNode* root) {
 vector<string> removeInvalidParentheses(string s) {
 
 }
-vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
 
-}
 class Trie {
 	std::unordered_set<std::string>mp_;
 public:
@@ -1273,8 +1271,43 @@ vector<int> findAnagrams(string s, string p) {
 	}
 	return ret;
 }
+vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+	vector<double>ret;
+	unordered_map<string,double>exist;
+	for(int i=0;i<equations.size();++i){
+		if(exist.find(equations[i][0])==exist.end()){
+		
+		}
+	}
+	
+}
+unordered_map<long long, int> prefix;
+using i64 =int64_t;
+int dfs(TreeNode *root, i64 curr, int targetSum) {
+	if (!root) {
+		return 0;
+	}
+	
+	int ret = 0;
+	curr += root->val;
+	if (prefix.count(curr - targetSum)) {
+		ret = prefix[curr - targetSum];
+	}
+	
+	prefix[curr]++;
+	ret += dfs(root->left, curr, targetSum);
+	ret += dfs(root->right, curr, targetSum);
+	prefix[curr]--;
+	
+	return ret;
+}
+
+int pathSum(TreeNode* root, int targetSum) {
+	prefix[0] = 1;
+	return dfs(root, 0, targetSum);
+}
 int main(){
-    auto ret=findAnagrams("abab","ab");
+	auto ret=findAnagrams("abab","ab");
 	cout<<ret;
 	return 0;
 }
