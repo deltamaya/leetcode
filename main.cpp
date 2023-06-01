@@ -25,17 +25,17 @@ string reverseWords(string s) {
 	s.resize(slow);
 	return s;
 }
-vector<int> twoSum(vector<int>& nums, int target) {
-	std::unordered_map<int, int> m;
-	for ( int i = 0; i < nums.size (); ++i ) {
-		auto iter = m.find (target - nums[ i ]);
-		if ( iter != m.end ()) {
-			return {i, iter->second};
-		}
-		m.insert ({nums[ i ], i});
-	}
-	return {};
-}
+//vector<int> twoSum(vector<int>& nums, int target) {
+//	std::unordered_map<int, int> m;
+//	for ( int i = 0; i < nums.size (); ++i ) {
+//		auto iter = m.find (target - nums[ i ]);
+//		if ( iter != m.end ()) {
+//			return {i, iter->second};
+//		}
+//		m.insert ({nums[ i ], i});
+//	}
+//	return {};
+//}
 struct cmp{
 	bool operator()(pair<int,int>a,pair<int,int>b){
 		return a.second<b.second;

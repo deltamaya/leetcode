@@ -1306,8 +1306,55 @@ int pathSum(TreeNode* root, int targetSum) {
 	prefix[0] = 1;
 	return dfs(root, 0, targetSum);
 }
+vector<int> twoSum(vector<int>& numbers, int target) {
+	int left=0,right=numbers.size()-1;
+	while(left<right){
+		while(numbers[left]+numbers[right]>target){
+			--right;
+		}
+		while(numbers[left]+numbers[right]<target){
+			++left;
+		}
+		if(numbers[left]+numbers[right]==target){
+			return {left+1,right+1};
+		}
+	}
+	return {0,0};
+}
+bool judgeSquareSum(int c) {
+	if(c<10){
+		if(c==7||c==3||c==6)return false;
+		return true;
+	}
+	unsigned left=0,right=sqrt(c);
+	while(left<=right){
+		if(left*left+right*right>c){
+			--right;
+		}else if(left*left+right*right<c){
+			++left;
+		}else{
+			return true;
+		}
+	}
+	return false;
+}
+string reverseVowels(string s) {
+	string vowels="aeiouAEIOU";
+	int left=0,right=s.size()-1;
+	while(left<right){
+		while(left<right&&vowels.find(s[left])==-1){
+			++left;
+		}
+		while(left<right&&vowels.find(s[right])==-1){
+			--right;
+		}
+		swap(s[left],s[right]);
+		++left;--right;
+	}
+	return s;
+}
 int main(){
-	auto ret=findAnagrams("abab","ab");
-	cout<<ret;
+	vector<int>tmp{2,3,4};
+	cout<<reverseVowels("");
 	return 0;
 }
