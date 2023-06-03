@@ -1353,8 +1353,125 @@ string reverseVowels(string s) {
 	}
 	return s;
 }
+int isLessOrEqual(int x, int y) {
+	int sub=((y+(~x+1))>>31)&1;//0 is y>=x, 1 is y<x
+	int x_min=!(x^(1<<31));
+	int y_min=!(y^(1<<31));
+	return (!sub&!y_min)|x_min;
+}
+unsigned floatScale2(unsigned uf) {
+  unsigned ret=0;
+  unsigned exponent=(uf&0x7f800000)>>23;
+  //printf("%u",exponent);
+  unsigned significant=uf&0x007fffff;
+  if(exponent==255)return uf;
+  else{
+    return (uf&0x80000000)+((exponent+1)<<23)+significant;
+  }
+}
+bool isValid(const string&s,int left,int right){
+	while(left<right&&s[left]==s[right]){
+		++left;--right;
+	}
+	return left>=right;
+}
+bool validPalindrome(string s) {
+	int left=0,right=s.size()-1;
+	while(left<right&&s[left]==s[right]){
+		++left;--right;
+	}
+	if(left>=right)return true;
+	else{
+		return isValid(s,left+1,right)||isValid(s,left,right-1);
+	}
+}
+string findLongestWord(string s, vector<string>& dictionary) {
+	string ret;
+	for(auto &&word:dictionary){
+		int ps=0,pw=0;
+		while(ps<s.size()&&pw<word.size()){
+			if(s[ps]==word[pw]){
+				++pw;
+			}
+			++ps;
+		}
+		if(pw==word.size()){
+			if(ret.size()<word.size()){
+				ret=word;
+			}else if(ret.size()==word.size()&&ret>word){
+				ret=word;
+			}
+		}
+	}
+	return ret;
+}
+int findKthLargest(vector<int>& nums, int k) {
+	priority_queue<int,vector<int>,greater<>>hp;
+	for(auto &&e:nums){
+		if(hp.size()<k)hp.push(e);
+		else{
+			if(e>hp.top()){
+				hp.pop();
+				hp.push(e);
+			}
+		}
+	}
+	return hp.top();
+}
+bool isPalindrome(string s) {
+	string temp;
+	for(auto &&ch:s){
+		if(ch>='0'&&ch<='9'||ch>='a'&&ch<='z')temp.push_back(ch);
+		else if(ch>='A'&&ch<='Z')temp.push_back(tolower(ch));
+		else continue;
+	}
+	int left=0,right=temp.size()-1;
+	while(left<right&&temp[left]==temp[right]){
+		++left;--right;
+	}
+	return left>=right;
+}
+void Reverse(string&s ,int left,int right){
+	while(left<right){
+		swap(s[left++],s[right--]);
+	}
+}
+//string reverseWords(string s) {
+//	int pre=0,pos=0;
+//	while((pos=s.find(' ',pos))!=-1){
+//		Reverse(s,pre,pos-1);
+//		pre=++pos;
+//	}
+//	Reverse(s,pre,s.size()-1);
+//	return s;
+//}
+string multiply(string num1, string num2) {
+	if(num1[0]=='0'||num2[0]=='0')return "0";
+	std::reverse(num1.begin(), num1.end());
+	std::reverse(num2.begin(), num2.end());
+	int i=0,mult=0,carry=0,sum=0;
+	string ret(num1.size()+num2.size(),'0');
+	string&less=num1;
+	string&greater=num2;
+	if(num1.size()>num2.size())swap(less,greater);
+	for(i=0;i<less.size();++i){
+		int j;
+		for(j=0;j<greater.size();++j){
+			mult=(less[i]-'0')*(greater[j]-'0')+carry+ret[i+j]-'0';
+			ret[i+j]='0'+mult%10;
+			carry=mult/10;
+		}
+		while(carry>0){
+			sum=carry+ret[i+j]-'0';
+			ret[i+j]='0'+sum%10;
+			carry=sum/10;
+			++j;
+		}
+	}
+	while(ret.back()=='0')ret.pop_back();
+	std::reverse(ret.begin(), ret.end());
+	return ret;
+}
 int main(){
-	vector<int>tmp{2,3,4};
-	cout<<reverseVowels("");
-	return 0;
+	std::cout<<multiply("0","312342342314523454356575678");
 }
