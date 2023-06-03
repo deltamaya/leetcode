@@ -51,19 +51,19 @@ build cmake_object_order_depends_target_ACM: phony || CMakeFiles/ACM.dir
 
 build CMakeFiles/ACM.dir/main.cpp.obj: CXX_COMPILER__ACM_Debug E$:/Cpp-Clion/ACM/main.cpp || cmake_object_order_depends_target_ACM
   DEP_FILE = CMakeFiles\ACM.dir\main.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\ACM.dir
   OBJECT_FILE_DIR = CMakeFiles\ACM.dir
 
 build CMakeFiles/ACM.dir/main1.cpp.obj: CXX_COMPILER__ACM_Debug E$:/Cpp-Clion/ACM/main1.cpp || cmake_object_order_depends_target_ACM
   DEP_FILE = CMakeFiles\ACM.dir\main1.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\ACM.dir
   OBJECT_FILE_DIR = CMakeFiles\ACM.dir
 
 build CMakeFiles/ACM.dir/main2.cpp.obj: CXX_COMPILER__ACM_Debug E$:/Cpp-Clion/ACM/main2.cpp || cmake_object_order_depends_target_ACM
   DEP_FILE = CMakeFiles\ACM.dir\main2.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\ACM.dir
   OBJECT_FILE_DIR = CMakeFiles\ACM.dir
 
