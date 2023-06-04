@@ -1472,6 +1472,26 @@ string multiply(string num1, string num2) {
 	std::reverse(ret.begin(), ret.end());
 	return ret;
 }
+vector<int> spiralOrder(vector<vector<int>> matrix) {
+	vector<int>ret;
+	int round=matrix.size()/2;
+	for(int r=0;r<round;++r){
+		for(int i=r;i<matrix[0].size()-r-1;++i){
+			ret.push_back(matrix[r][i]);
+		}
+		for(int i=r;i<matrix.size()-r-1;++i){
+			ret.push_back(matrix[i][matrix.size()-r-1]);
+		}
+		for(int i=matrix[0].size()-r-1;i>r;--i){
+			ret.push_back(matrix[matrix.size()-r-1][i]);
+		}
+		for(int i=matrix.size()-r-1;i>r;--i){
+			ret.push_back(matrix[i][r]);
+		}
+	}
+	if(matrix.size()%2)ret.push_back(matrix[matrix.size()/2][matrix.size()/2]);
+	return ret;
+}
 int main(){
-	std::cout<<multiply("0","312342342314523454356575678");
+	std::cout<<spiralOrder({{1,2,3,4},{5,6,7,8},{9,10,11,12}});
 }
