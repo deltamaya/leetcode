@@ -1474,23 +1474,34 @@ string multiply(string num1, string num2) {
 }
 vector<int> spiralOrder(vector<vector<int>> matrix) {
 	vector<int>ret;
-	int round=matrix.size()/2;
-	for(int r=0;r<round;++r){
-		for(int i=r;i<matrix[0].size()-r-1;++i){
-			ret.push_back(matrix[r][i]);
-		}
-		for(int i=r;i<matrix.size()-r-1;++i){
-			ret.push_back(matrix[i][matrix.size()-r-1]);
-		}
-		for(int i=matrix[0].size()-r-1;i>r;--i){
-			ret.push_back(matrix[matrix.size()-r-1][i]);
-		}
-		for(int i=matrix.size()-r-1;i>r;--i){
-			ret.push_back(matrix[i][r]);
-		}
+	int n=matrix.size(),m=matrix[0].size();
+	int l=0,u=0,r=m-1,d=n-1;
+	while(1){
+		for(int i=l;i<=r;++i)ret.push_back(matrix[u][i]);
+		if(++u>d)break;
+		for(int j=u;j<=d;++j)ret.push_back(matrix[j][r]);
+		if(--r<l)break;
+		for(int i=r;i>=l;--i)ret.push_back(matrix[d][i]);
+		if(--d<u)break;
+		for(int j=d;j>=u;--j)ret.push_back(matrix[j][l]);
+		if(++l>r)break;
 	}
-	if(matrix.size()%2)ret.push_back(matrix[matrix.size()/2][matrix.size()/2]);
 	return ret;
+}
+TreeNode* BuildTreeRec(vector<int>&preorder,int pre_left,int pre_right,vector<int>&inorder,int in_left,int in_right){
+	if(pre_left>pre_right||in_left>in_right)return nullptr;
+	int i=in_left;
+	auto node=new TreeNode(preorder[pre_left]);
+	while(inorder[i]!=preorder[pre_left])++i;
+	i-=in_left;
+	node->left=BuildTreeRec(preorder,pre_left+1,pre_left+i,inorder,in_left,in_left+i-1);
+	node->right= BuildTreeRec(preorder,pre_left+i+1,pre_right,inorder,in_left+i+1,in_right);
+	return node;
+}
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+	if(!preorder.size()||!inorder.size())return nullptr;
+	auto root= BuildTreeRec(preorder,0,preorder.size()-1,inorder,0,inorder.size()-1);
+	return root;
 }
 int main(){
 	std::cout<<spiralOrder({{1,2,3,4},{5,6,7,8},{9,10,11,12}});
