@@ -1503,6 +1503,80 @@ TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
 	auto root= BuildTreeRec(preorder,0,preorder.size()-1,inorder,0,inorder.size()-1);
 	return root;
 }
+
+double QuickPower(double  base,long long  power){
+	int ret=1;
+	while(power>1){
+		if(power%2){
+			ret*=base;
+			--power;
+		}else{
+			base*=base;
+			power>>=1;
+		}
+	}
+	return ret*base;
+}
+//int cuttingRope(int n) {
+//	const int MOD=1e9+7;
+//	if(n<=3)return n-1;
+//	if(n==4)return 4;
+//	long long ret=1;
+//	while(n>4){
+//		ret=(ret*3)%MOD;
+//		n-=3;
+//	}
+//	return int((ret*n)%MOD);
+//}
+std::string cuttingRope(int n) {
+	const int MOD=1e9+7;
+	if(n<=3)return to_string(n-1);
+	if(n==4)return to_string(4);
+	string ret="1";
+	while(n>4){
+		ret= multiply(ret,"3");
+		n-=3;
+	}
+	std::cout<<ret;
+	return ret;
+}
+bool IsInteger(const string& s){
+	if(s.size()==0)return false;
+	if(s[0]=='+'||s[0]=='-'||s[0]>='0'&&s[0]<='9'){
+		auto ret=s.find_last_not_of("1234567890");
+		return (ret==0||ret==-1)&&(s.find_first_of("1234567890")!=-1);
+	}
+	else
+		return false;
+}
+bool IsFloat(const string& s){
+	if(s.size()==0)return false;
+	int idx=s.find('.');
+	if(idx!=-1){
+		if(idx==s.size()-1&&idx!=((s[0]=='+'||s[0]=='-')?1:0))return IsInteger(s.substr((s[0]=='+'||s[0]=='-')?1:0,idx-((s[0]=='+'||s[0]=='-')?1:0)));
+		else if(idx==((s[0]=='+'||s[0]=='-')?1:0))return IsInteger(s.substr(idx+1,s.size()-idx-1))&&(s[idx+1]!='+'&&s[idx+1]!='-');
+		else return IsInteger(s.substr((s[0]=='+'||s[0]=='-')?1:0,idx))&&(s[idx+1]!='+'&&s[idx+1]!='-')&&IsInteger(s.substr(idx+1,s.size()-idx-1));
+	}
+	else
+		return false;
+}
+bool isNumber(string s) {
+	string temp;
+	int i=0;
+	for(i=0;i<s.size()&&s[i]==' ';++i);
+	int j=0;
+	for(j=s.size()-1;j>=i&&s[j]==' ';--j);
+	if(i>j)return false;
+	temp=s.substr(i,j-i+1);
+	for(;i<j;++i)if(s[i]==' ')return false;
+	if(auto idx=temp.find_first_of("eE");idx!=-1){
+		return (IsFloat(temp.substr(0,idx))|| IsInteger(temp.substr(0,idx)))&&IsInteger(temp.substr(idx+1,temp.size()-idx-1));
+	}
+	return IsFloat(temp)|| IsInteger(temp);
+}
 int main(){
-	std::cout<<spiralOrder({{1,2,3,4},{5,6,7,8},{9,10,11,12}});
+	vector<string>test={"-070991.58", "3.", "+.", "3.", ".-4", "+.8"};
+	for(auto && s:test){
+		std::cout<<isNumber(s);
+	}
 }

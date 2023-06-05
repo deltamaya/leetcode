@@ -491,9 +491,9 @@ TreeNode* rec(vector<int>& inorder, vector<int>& postorder,int in_begin,int in_e
 	}
 	return root;
 }
-TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-	return rec(inorder,postorder,0,inorder.size()-1,0,postorder.size()-1);
-}
+//TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+//	return rec(inorder,postorder,0,inorder.size()-1,0,postorder.size()-1);
+//}
 
 //20230425
 
