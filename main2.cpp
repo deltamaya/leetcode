@@ -1630,9 +1630,29 @@ Node* treeToDoublyList(Node* root) {
 	pre->right = head;
 	return head;
 }
-int main(){
-	vector<string>test={"-070991.58", "3.", "+.", "3.", ".-4", "+.8"};
-	for(auto && s:test){
-		std::cout<<isNumber(s);
+void BackTracking(vector<string>&ret,string&s,string&path){
+	if(path.size()==s.size()){
+		ret.push_back(path);
+		return;
 	}
+	for(int i=0;i<s.size();){
+		if(s[i]==' '){i++;continue;}
+		auto temp=s[i];
+		path.push_back(s[i]);
+		s[i]=' ';
+		BackTracking(ret,s,path);
+		s[i]=temp;
+		while(i<s.size()&&(s[i]==path.back()||s[i]==' '))++i;
+		path.pop_back();
+	}
+}
+vector<string> permutation(string s) {
+	sort(s.begin(),s.end());
+	vector<string>ret;
+	string path;
+	BackTracking(ret,s,path);
+	return ret;
+}
+int main(){
+	auto ret=permutation("abc");
 }
