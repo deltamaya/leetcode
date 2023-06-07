@@ -1574,6 +1574,62 @@ bool isNumber(string s) {
 	}
 	return IsFloat(temp)|| IsInteger(temp);
 }
+bool VerifyPostorderRec(vector<int>&postorder,int begin,int end){
+	if(begin>=end)return true;
+	int right=begin;
+	while(right<end&&postorder[right]<postorder[end])
+		++right;
+	for(int temp=right;temp<end;++temp)if(postorder[temp]<=postorder[end])return false;
+	return VerifyPostorderRec(postorder,begin,right-1)&& VerifyPostorderRec(postorder,right,end-1);
+	
+}
+bool verifyPostorder(vector<int>& postorder){
+	return VerifyPostorderRec(postorder,0,postorder.size()-1);
+}
+class Node {
+public:
+	int val;
+	Node* left;
+	Node* right;
+	
+	Node() {}
+	
+	Node(int _val) {
+		val = _val;
+		left = NULL;
+		right = NULL;
+	}
+	
+	Node(int _val, Node* _left, Node* _right) {
+		val = _val;
+		left = _left;
+		right = _right;
+	}
+};
+//if it's a left child:
+//  left -> parent's parent
+//  right -> parent(if !right)
+//if it's a right child:
+//  left -> parent(if !left)
+//  right ->parent's parent if(!right)
+Node*pre,*head;
+void TreeToDoublyListTraversal(Node*cur){
+	if(!cur)return;
+	auto l=cur->left,r=cur->right;
+	TreeToDoublyListTraversal(l);
+	if(pre)pre->right=cur;
+	else head=cur;
+	cur->left=pre;
+	pre=cur;
+	TreeToDoublyListTraversal(r);
+}
+Node* treeToDoublyList(Node* root) {
+	if(!root) return nullptr;
+	TreeToDoublyListTraversal(root);
+	head->left = pre;
+	pre->right = head;
+	return head;
+}
 int main(){
 	vector<string>test={"-070991.58", "3.", "+.", "3.", ".-4", "+.8"};
 	for(auto && s:test){
