@@ -1653,6 +1653,57 @@ vector<string> permutation(string s) {
 	BackTracking(ret,s,path);
 	return ret;
 }
+int findNthDigit(int n) {
+
+	if(n<10)return n;
+	n-=1;
+	int i=8;
+	int x=0;
+	for(int j=1;j<=8;++j)x+=pow(10,j-1)*j*9;
+	while(n<x)x-=i*pow(10,--i)*9;
+	int sub=n-x;
+	string temp=std::to_string(int(pow(10,i))+sub/(i+1));
+	return temp[sub%(i+1)]-'0';
+}
+void BackTrackingNthUglyNumber(int num,int i,int limit,vector<int>&ret,int begin){
+	if(ret.size()>=1690)return;
+	if(i==limit){
+		ret.push_back(num);
+		return;
+	}
+	array<int,3>temp{2,3,5};
+	for(int j=begin;j<3;++j){
+		if((long long)num*temp[j]>INT_MAX)return;
+		num*=temp[j];
+		BackTrackingNthUglyNumber(num,i+1,limit,ret,j);
+		num/=temp[j];
+	}
+}
+//int nthUglyNumber(int n) {
+//	vector<int>ret;
+//	for(int i=0;ret.size()<1690;++i){
+//		BackTrackingNthUglyNumber(1,0,i,ret,0);
+//	}
+//	std::sort(ret.begin(), ret.end());
+//	return ret[n-1];
+//
+//}
+
+int nthUglyNumber(int n){
+	vector<int>dp(n,0);
+	int mult2=0,mult3=0,mult5=0;
+	dp[0]=1;
+	for(int i=1;i<n;++i){
+		vector<int>temp{dp[mult2]*2,dp[mult3]*3,dp[mult5]*5};
+		int  mini=0;
+		for(int j=0;j<3;++j)if(temp[j]<temp[mini])mini=j;
+		dp[i]=temp[mini];
+		if(dp[mult2]*2==temp[mini])++mult2;
+		if(dp[mult3]*3==temp[mini])++mult3;
+		if(dp[mult5]*5==temp[mini])++mult5;
+	}
+	return dp.back();
+}
 int main(){
-	auto ret=permutation("abc");
+	std::cout<<nthUglyNumber(1650);
 }
