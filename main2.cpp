@@ -1704,6 +1704,69 @@ int nthUglyNumber(int n){
 	}
 	return dp.back();
 }
+int GetMaxOneUptoSigAndIdx(int sig,int idx){
+	if(idx<0)return 0;
+	if(!sig)return (idx>=0?1:0);
+	return pow(10,sig-1)*sig+(idx==1?pow(10,sig):0)+ GetMaxOneUptoSigAndIdx(sig,idx-1);
+}
+int countDigitOne(int n) {
+	int temp=n;
+	int cnt=0;
+	int sig=log10(n);
+	while(sig>=0){
+		int idx=(n/(int(pow(10,sig))))%10-1;
+		cnt+= GetMaxOneUptoSigAndIdx(sig,idx);
+		temp-=(idx+1)*pow(10,sig);
+		if(!idx&&sig)cnt+=temp+1;
+		--sig;
+	}
+	return cnt;
+}
+//this is preorder traversal solution, it's time and memory cost is much higher than layer order (line 1193 in this file)
+class Codecc {
+public:
+	
+	void SerializeTraversal(TreeNode*root,string&ret){
+		if(!root){
+			ret+="null,";
+			return;
+		}else{
+			ret+=to_string(root->val);
+			ret+=",";
+			SerializeTraversal(root->left,ret);
+			SerializeTraversal(root->right,ret);
+		}
+	}
+	// Encodes a tree to a single string.
+	string serialize(TreeNode* root) {
+		string ret;
+		SerializeTraversal(root,ret);
+		return ret;
+	}
+	TreeNode* DeserializeTraversal(string data,int& pos){
+		if(pos>=data.size())return nullptr;
+		int next=data.find(",",pos);
+		auto result=data.substr(pos,next-pos);
+		pos=next+1;
+		if(result=="null")return nullptr;
+		auto node=new TreeNode(stoi(result));
+
+		node->left=DeserializeTraversal(data,pos);
+		node->right=DeserializeTraversal(data,pos);
+		return node;
+	}
+	// Decodes your encoded data to tree.
+	TreeNode* deserialize(string data) {
+		if(data=="null,")return nullptr;
+		int pos=0;
+		return DeserializeTraversal(data,pos);
+	}
+};
 int main(){
-	std::cout<<nthUglyNumber(1650);
+	auto root=new TreeNode(1);
+	root->left=new TreeNode(2);
+	root->right=new TreeNode(3);
+	Codecc obj;
+	auto str=obj.serialize(root);
+	auto ret=obj.deserialize(str);
 }
