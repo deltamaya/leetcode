@@ -1722,51 +1722,115 @@ int countDigitOne(int n) {
 	}
 	return cnt;
 }
-//this is preorder traversal solution, it's time and memory cost is much higher than layer order (line 1193 in this file)
+//this is preorder traversal recursion solution, it's time and memory cost is much higher than layer order (line 1193 in this file)
+//class Codecc {
+//public:
+//
+//	void SerializeTraversal(TreeNode*root,string&ret){
+//		if(!root){
+//			ret+="null,";
+//			return;
+//		}else{
+//			ret+=to_string(root->val);
+//			ret+=",";
+//			SerializeTraversal(root->left,ret);
+//			SerializeTraversal(root->right,ret);
+//		}
+//	}
+//	// Encodes a tree to a single string.
+//	string serialize(TreeNode* root) {
+//		string ret;
+//		SerializeTraversal(root,ret);
+//		return ret;
+//	}
+//	TreeNode* DeserializeTraversal(string data,int& pos){
+//		if(pos>=data.size())return nullptr;
+//		int next=data.find(",",pos);
+//		auto result=data.substr(pos,next-pos);
+//		pos=next+1;
+//		if(result=="null")return nullptr;
+//		auto node=new TreeNode(stoi(result));
+//
+//		node->left=DeserializeTraversal(data,pos);
+//		node->right=DeserializeTraversal(data,pos);
+//		return node;
+//	}
+//	// Decodes your encoded data to tree.
+//	TreeNode* deserialize(string data) {
+//		if(data=="null,")return nullptr;
+//		int pos=0;
+//		return DeserializeTraversal(data,pos);
+//	}
+//};
 class Codecc {
 public:
 	
-	void SerializeTraversal(TreeNode*root,string&ret){
-		if(!root){
-			ret+="null,";
-			return;
-		}else{
-			ret+=to_string(root->val);
-			ret+=",";
-			SerializeTraversal(root->left,ret);
-			SerializeTraversal(root->right,ret);
-		}
-	}
 	// Encodes a tree to a single string.
 	string serialize(TreeNode* root) {
 		string ret;
-		SerializeTraversal(root,ret);
+		stack<TreeNode*>st;
+		st.push(root);
+		while(!st.empty()){
+			auto node=st.top();
+			st.pop();
+			if(!node){
+				ret+="null,";
+				continue;
+			}
+			ret+=(to_string(node->val)+',');
+			st.push(node->right);
+			st.push(node->left);
+		}
 		return ret;
-	}
-	TreeNode* DeserializeTraversal(string data,int& pos){
-		if(pos>=data.size())return nullptr;
-		int next=data.find(",",pos);
-		auto result=data.substr(pos,next-pos);
-		pos=next+1;
-		if(result=="null")return nullptr;
-		auto node=new TreeNode(stoi(result));
-
-		node->left=DeserializeTraversal(data,pos);
-		node->right=DeserializeTraversal(data,pos);
-		return node;
 	}
 	// Decodes your encoded data to tree.
 	TreeNode* deserialize(string data) {
 		if(data=="null,")return nullptr;
-		int pos=0;
-		return DeserializeTraversal(data,pos);
+		int pos=data.find(',');
+		int pre=0;
+		auto root=new TreeNode(stoi(data.substr(0,pos)));
+		pre=++pos;
+		stack<TreeNode*>st;
+		st.push(root);
+		string result;
+		while(!st.empty()){
+			l:
+			if(pos==data.size())break;
+			auto node=st.top();
+			if(node->left||node->right)goto r;
+			pos=data.find(",",pos);
+			result=data.substr(pre,pos-pre);
+			pre=++pos;
+			if(result=="null"){
+				goto r;
+			}
+			node->left=new TreeNode(stoi(result));
+			st.push(node->left);
+			goto l;
+			r:
+			if(pos==data.size())break;
+			node=st.top();
+			if(node->right){
+				st.pop();
+				continue;
+			}
+			pos=data.find(",",pos);
+			result=data.substr(pre,pos-pre);
+			pre=++pos;
+			if(result=="null"){
+				st.pop();
+				continue;
+			}
+			node->right=new TreeNode(stoi(result));
+			st.push(node->right);
+		}
+		return root;
 	}
 };
 int main(){
-	auto root=new TreeNode(1);
-	root->left=new TreeNode(2);
-	root->right=new TreeNode(3);
 	Codecc obj;
-	auto str=obj.serialize(root);
+	string str;
+	getline(cin,str);
 	auto ret=obj.deserialize(str);
+	cout<<obj.serialize(ret);
 }
