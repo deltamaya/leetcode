@@ -1853,6 +1853,23 @@ public:
 		return (double(left.top())+right.top())/2;
 	}
 };
+vector<int> singleNumbers(vector<int>& nums) {
+	int temp=0;
+	for(auto&&e:nums){
+		temp^=e;
+	}
+	int div=1;
+	while(!(div&temp))div<<=1;
+	int x=0,y=0;
+	for(auto &&e:nums){
+		if(e&div){
+			x^=e;
+		}else{
+			y^=e;
+		}
+	}
+	return vector<int>{x,y};
+}
 int main(){
 	Codecc obj;
 	string str;
