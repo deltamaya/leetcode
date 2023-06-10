@@ -1827,6 +1827,32 @@ public:
 		return root;
 	}
 };
+class MedianFinder {
+	priority_queue<int,vector<int>,less<>>left;
+	priority_queue<int,vector<int>,greater<>>right;
+public:
+	
+	/** initialize your data structure here. */
+	MedianFinder() {
+	}
+	
+	void addNum(int num) {
+		left.push(num);
+		right.push(left.top());
+		left.pop();
+		if(left.size()<right.size()){
+			left.push(right.top());
+			right.pop();
+		}
+	}
+	
+	double findMedian() {
+		if(left.size()>right.size()){
+			return left.top();
+		}
+		return (double(left.top())+right.top())/2;
+	}
+};
 int main(){
 	Codecc obj;
 	string str;
