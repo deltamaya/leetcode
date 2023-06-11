@@ -1930,6 +1930,45 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 	ret.push_back (nums[q.front()]);
 	return ret;
 }
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+	if(!root||root==p||root==q)return root;
+	auto lhs= lowestCommonAncestor(root->left,p,q);
+	auto rhs= lowestCommonAncestor(root->right,p,q);
+	if(lhs&&rhs)return root;
+	if(lhs)return lhs;
+	if(rhs)return rhs;
+	return nullptr;
+}
+int strToInt(string str) {
+	int i=0;
+	while(i<str.size()&&str[i]==' ')++i;
+	if(i==str.size())return 0;
+	int sign=1;
+	if(str[i]=='+'||str[i]=='-'){
+		if(str[i]=='-')sign=-1;
+		++i;
+	}
+	while(i<str.size()&&str[i]=='0')++i;
+	if(i==str.size())return 0;
+	if(str[i]>='0'&&str[i]<='9'){
+		int j=i;
+		while(j<str.size()&&str[j]>='0'&&str[j]<='9')++j;
+		if((j-i==10&&str.substr(i,j-i)>"2147483647")||j-i>10){
+			if(sign==1)return INT_MAX;
+			else return INT_MIN;
+		}else{
+			int ret=0;
+			while(i<j){
+				ret*=10;
+				ret+=str[i]-'0';
+				++i;
+			}
+			return ret*sign;
+		}
+	}else{
+		return 0;
+	}
+}
 int main(){
 	
 	auto ret= findContinuousSequence(15);
