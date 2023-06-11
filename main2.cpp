@@ -1870,10 +1870,70 @@ vector<int> singleNumbers(vector<int>& nums) {
 	}
 	return vector<int>{x,y};
 }
+int singleNumber(vector<int>& nums) {
+	unordered_map<int,int>mp;
+	for(auto &&e:nums){
+		mp[e]++;
+	}
+	for(auto &&e:mp){
+		if(e.second==1)return e.first;
+	}
+	return 0;
+}
+vector<int> GetVec(int begin,int end){
+	vector<int>ret;
+	for(int i=begin;i<=end;++i){
+		ret.push_back(i);
+	}
+	return std::move(ret);
+}
+vector<vector<int>> findContinuousSequence(int target) {
+	vector<vector<int>>ret;
+	int begin=1,sum=0;
+	int i=begin;
+	while(sum<target){
+		sum+=i++;
+	}
+	while(begin<=target/2){
+		if(sum==target){
+			ret.push_back(GetVec(begin,i-1));
+		}
+		if(sum<=target){
+			sum+=i++;
+		}
+		while(sum>target&&begin<=target/2){
+			sum-=begin++;
+		}
+
+	}
+	return std::move(ret);
+}
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+	vector<int>ret;
+	deque<int>q;
+	for(int i=0;i<k;++i){
+		while(!q.empty()&&nums[i]>=nums[q.back()]){
+			q.pop_back();
+		}
+		q.push_back (i);
+	}
+	for(int i=0;i+k<nums.size();++i){
+		ret.push_back (nums[q.front()]);
+		if(q.front()==i){
+			q.pop_front();
+		}
+		while(!q.empty()&&nums[i+k]>=nums[q.back()]){
+			q.pop_back();
+		}
+		q.push_back (i+k);
+	}
+	ret.push_back (nums[q.front()]);
+	return ret;
+}
 int main(){
-	Codecc obj;
-	string str;
-	getline(cin,str);
-	auto ret=obj.deserialize(str);
-	cout<<obj.serialize(ret);
+	
+	auto ret= findContinuousSequence(15);
+	for(auto&&vec:ret){
+		std::cout<<vec;
+	}
 }
