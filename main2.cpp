@@ -2002,6 +2002,40 @@ vector<double> dicesProbability(int n) {
 	}
 	return std::move(ret);
 }
+class MaxQueue {
+	size_t sz;
+	queue<int>input_;
+	deque<int>maxes_;
+public:
+	MaxQueue() {
+		sz=0;
+	}
+	
+	int max_value() {
+		if(sz==0)return -1;
+		return maxes_.front();
+	}
+	
+	void push_back(int value) {
+		++sz;
+		input_.push(value);
+		while(!maxes_.empty()&&maxes_.back()<value){
+			maxes_.pop_back();
+		}
+		maxes_.push_back(value);
+	}
+	
+	int pop_front() {
+		if(sz==0)return -1;
+		auto ret=input_.front();
+		input_.pop();
+		if(ret==maxes_.front()){
+			maxes_.pop_front();
+		}
+		--sz;
+		return ret;
+	}
+};
 int main(){
 	auto ret= dicesProbability(3);
 	cout<<ret;
