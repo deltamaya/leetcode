@@ -126,11 +126,11 @@ int rob(TreeNode* root) {
 	auto ret=rec_tr(root);
 	return max(ret[0],ret[1]);
 }
-
-ostream& operator<<(ostream&os ,const vector<int>&v){
+template<typename T>
+ostream& operator<<(ostream&os ,const vector<T>&v){
 	for(auto e:v){
 		//os<<e<<' ';
-		printf("%3d ",e);
+		os<<e<<' ';
 	}
 	os<<endl;
 	return os;
@@ -1908,37 +1908,37 @@ vector<vector<int>> findContinuousSequence(int target) {
 	}
 	return std::move(ret);
 }
-vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-	vector<int>ret;
-	deque<int>q;
-	for(int i=0;i<k;++i){
-		while(!q.empty()&&nums[i]>=nums[q.back()]){
-			q.pop_back();
-		}
-		q.push_back (i);
-	}
-	for(int i=0;i+k<nums.size();++i){
-		ret.push_back (nums[q.front()]);
-		if(q.front()==i){
-			q.pop_front();
-		}
-		while(!q.empty()&&nums[i+k]>=nums[q.back()]){
-			q.pop_back();
-		}
-		q.push_back (i+k);
-	}
-	ret.push_back (nums[q.front()]);
-	return ret;
-}
-TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-	if(!root||root==p||root==q)return root;
-	auto lhs= lowestCommonAncestor(root->left,p,q);
-	auto rhs= lowestCommonAncestor(root->right,p,q);
-	if(lhs&&rhs)return root;
-	if(lhs)return lhs;
-	if(rhs)return rhs;
-	return nullptr;
-}
+//vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+//	vector<int>ret;
+//	deque<int>q;
+//	for(int i=0;i<k;++i){
+//		while(!q.empty()&&nums[i]>=nums[q.back()]){
+//			q.pop_back();
+//		}
+//		q.push_back (i);
+//	}
+//	for(int i=0;i+k<nums.size();++i){
+//		ret.push_back (nums[q.front()]);
+//		if(q.front()==i){
+//			q.pop_front();
+//		}
+//		while(!q.empty()&&nums[i+k]>=nums[q.back()]){
+//			q.pop_back();
+//		}
+//		q.push_back (i+k);
+//	}
+//	ret.push_back (nums[q.front()]);
+//	return ret;
+//}
+//TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+//	if(!root||root==p||root==q)return root;
+//	auto lhs= lowestCommonAncestor(root->left,p,q);
+//	auto rhs= lowestCommonAncestor(root->right,p,q);
+//	if(lhs&&rhs)return root;
+//	if(lhs)return lhs;
+//	if(rhs)return rhs;
+//	return nullptr;
+//}
 int strToInt(string str) {
 	int i=0;
 	while(i<str.size()&&str[i]==' ')++i;
@@ -1969,10 +1969,40 @@ int strToInt(string str) {
 		return 0;
 	}
 }
-int main(){
-	
-	auto ret= findContinuousSequence(15);
-	for(auto&&vec:ret){
-		std::cout<<vec;
+vector<int> constructArr(vector<int>& a) {
+	if(a.size()<1)return {};
+	vector<int>ret(a),ltor(a),rtol(a);
+	for(int i=1;i<ltor.size();++i){
+		ltor[i]=ltor[i-1]*a[i];
 	}
+	for(int i=rtol.size()-2;i>=0;--i){
+		rtol[i]=rtol[i+1]*a[i];
+	}
+	ret[0]=rtol[1];
+	for(int i=1;i<a.size()-1;++i){
+		ret[i]=ltor[i-1]*rtol[i+1];
+	}
+	ret.back()=ltor[ltor.size()-2];
+	return std::move(ret);
+}
+vector<double> dicesProbability(int n) {
+	vector<double>ret(6+(n-1)*5,0);
+	auto temp=ret;
+	for(int i=0;i<6;++i){
+		ret[i]=1.0/6;
+	}
+	for(int dice_cnt=2;dice_cnt<=n;++dice_cnt){
+		for(int i=0;i<6+(dice_cnt-1)*5;++i){
+			for(int j=0;j<=min(i,5);++j){
+				temp[i]+=ret[i-j]/6;
+			}
+		}
+		ret=temp;
+		temp.assign(temp.size(),0);
+	}
+	return std::move(ret);
+}
+int main(){
+	auto ret= dicesProbability(3);
+	cout<<ret;
 }
