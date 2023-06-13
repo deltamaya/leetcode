@@ -2036,7 +2036,62 @@ public:
 		return ret;
 	}
 };
+//int reversePairs(vector<int>& nums) {
+//	int cnt=0;
+//	multiset<int>count;
+//	for(auto &&e:nums){
+//		count.insert(-e);
+//		cnt+=distance(count.begin(),count.find(-e));
+//	}
+//	return cnt;
+//}
+int merge_sort(vector<int>&nums,vector<int>&temp,int l,int r){
+	if(l>=r)return 0;
+	int mid=(l+r)/2;
+	int rev_cnt=merge_sort(nums,temp,l,mid)+ merge_sort(nums,temp,mid+1,r);
+	int p1=l,p2=mid+1,pos=l;
+
+	while(p1<=mid&&p2<=r){
+		if(nums[p1]>nums[p2]){
+			temp[pos]=nums[p2];
+			rev_cnt+=(mid-p1+1);
+			++p2;
+		}else{
+			temp[pos]=nums[p1];
+			++p1;
+		}
+		++pos;
+	}
+	
+	while(p1<=mid){
+		temp[pos++]=nums[p1++];
+	
+	}
+	while(p2<=r){
+		temp[pos++]=nums[p2++];
+	}
+	
+	copy(temp.begin()+l,temp.begin()+r+1,nums.begin()+l);
+	return rev_cnt;
+	
+}
+int reversePairs(vector<int>& nums) {
+	vector<int>temp(nums.size());
+	return merge_sort(nums,temp,0,nums.size()-1);
+}
+int reverse(int x) {
+	if(x==INT_MIN)return 0;
+	bool neg=x<0;
+	if(neg)x*=-1;
+	auto num_str=to_string(x);
+	if(num_str.size()>10)return 0;
+	reverse(num_str.begin(),num_str.end());
+	if(num_str.size()==10&&num_str>to_string(INT_MAX))return 0;
+	return stoi(num_str)*(neg?-1:1);
+}
 int main(){
-	auto ret= dicesProbability(3);
+	vector<int>temp{7,6,5,4};
+	auto ret= reversePairs(temp);
+	cout<<temp;
 	cout<<ret;
 }
