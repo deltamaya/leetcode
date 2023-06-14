@@ -128,8 +128,7 @@ int rob(TreeNode* root) {
 }
 template<typename T>
 ostream& operator<<(ostream&os ,const vector<T>&v){
-	for(auto e:v){
-		//os<<e<<' ';
+	for(auto&& e:v){
 		os<<e<<' ';
 	}
 	os<<endl;
@@ -2089,9 +2088,32 @@ int reverse(int x) {
 	if(num_str.size()==10&&num_str>to_string(INT_MAX))return 0;
 	return stoi(num_str)*(neg?-1:1);
 }
+bool isMatch(string s, string p) {
+	vector<vector<bool>>dp(s.size()+1,vector<bool>(p.size()+1,false));
+	dp[0][0]=true;
+	int cnt=0;
+	for(int i=1;i<=p.size();++i){
+		if(p[i-1]!='*')++cnt;
+		else{
+			if(--cnt==0)dp[0][i]=true;
+		}
+	}
+	for(int i=1;i<=s.size();++i){
+		for(int j=1;j<=p.size();++j){
+			if(p[j-1]=='*'){
+				if(dp[i][j - 2]) dp[i][j] = true;                              // 1.
+				else if(dp[i - 1][j] && s[i - 1] == p[j - 2]) dp[i][j] = true; // 2.
+				else if(dp[i - 1][j] && p[j - 2] == '.') dp[i][j] = true;      // 3.
+			}else if(p[j-1]=='.'){
+				dp[i][j]=dp[i-1][j-1];
+			}else{
+				if(s[i-1]==p[j-1])dp[i][j]=dp[i-1][j-1];
+			}
+		}
+	}
+	cout<<' '<<dp;
+	return dp.back().back();
+}
 int main(){
-	vector<int>temp{7,6,5,4};
-	auto ret= reversePairs(temp);
-	cout<<temp;
-	cout<<ret;
+	cout<<isMatch("aab","b.*");
 }
