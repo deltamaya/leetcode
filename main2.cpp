@@ -2114,6 +2114,21 @@ bool isMatch(string s, string p) {
 	cout<<' '<<dp;
 	return dp.back().back();
 }
+//recursive version
+//int lastRemaining(int n, int m) {
+//	if(n==1)return 0;
+//	int offset=lastRemaining(n-1,m);
+//	return (m+offset)%n;
+//}
+
+//iterative version
+int lastRemaining(int n, int m) {
+	int ret=0;
+	for(int i=2;i<=n;++i){
+		ret=(ret+m)%i;
+	}
+	return ret;
+}
 int main(){
 	cout<<isMatch("aab","b.*");
 }
