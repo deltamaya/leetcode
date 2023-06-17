@@ -87,15 +87,30 @@ int count(int a){
 	}
 	return cnt;
 }
+//int singleNumber(vector<int>& nums) {
+//	unordered_map<int,int>mp;
+//	for(auto &&e:nums){
+//		mp[e]++;
+//	}
+//	for(auto &&[k,v]:mp){
+//		if(v==1)return k;
+//	}
+//	return -1;
+//}
 int singleNumber(vector<int>& nums) {
-	map<int,int>mp;
+	array<int,32>arr{0};
 	for(auto &&e:nums){
-		mp[e]++;
+		for(int off=0;off<32;++off){
+			arr[off]+=(e>>off)&1;
+		}
 	}
-	for(auto &&pair:mp){
-		if(pair.second==1)return pair.first;
+	int ret=0;
+	for(int off=0;off<32;++off){
+		if(arr[off]%3){
+			ret|=1<<off;
+		}
 	}
-	return -1;
+	return ret;
 }
 int maxProduct(vector<string>& words) {
 	int ret=0;
@@ -118,8 +133,48 @@ vector<int> twoSum(vector<int>& numbers, int target) {
 	}
 	return {-1,-1};
 }
-int main(){
+inline int BinarySearch(const vector<int>&v,int target,int begin){
+	int l=begin,r=v.size()-1,m;
+	while(l<=r){
+		m=(l+r)/2;
+		if(v[m]>target){
+			r=m-1;
+		}else if(v[m]<target){
+			l=m+1;
+		}else{
+			return m;
+		}
+	}
+	return -1;
+}
+vector<vector<int>> threeSum(vector<int>& nums) {
+	vector<vector<int>>ret;
+	sort(nums.begin(),nums.end());
+	for(int l=0;l<nums.size();++l){
+		if(nums[l]>0)break;
+		for(int m=l+1;m<nums.size();++m){
+			if(nums[l]+nums[m]>0)break;
+			if(auto temp=BinarySearch(nums,-(nums[l]+nums[m]),m+1);temp!=-1){
+				ret.emplace_back(vector<int>{nums[l],nums[m],nums[temp]});
+				
+			}
+			while(m+1<nums.size()&&nums[m+1]==nums[m])++m;
+		}
+		while(l+1<nums.size()&&nums[l+1]==nums[l])++l;
+	}
+	return std::move(ret);
+}
+template<typename T>
+ostream& operator<<(ostream&os,const vector<T>&v){
+	for(auto&&e:v){
+		os<<e<<' ';
+	}
+	os<<endl;
+	return os;
+}
 
-	std::cout<<count(10);
+int main(){
+	vector<int>temp{-4,-1,-1,0,1,2};
+	std::cout<<threeSum(temp);
 	return 0;
 }
