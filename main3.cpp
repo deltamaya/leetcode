@@ -153,8 +153,9 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 	for(int l=0;l<nums.size();++l){
 		if(nums[l]>0)break;
 		for(int m=l+1;m<nums.size();++m){
-			if(nums[l]+nums[m]>0)break;
-			if(auto temp=BinarySearch(nums,-(nums[l]+nums[m]),m+1);temp!=-1){
+			int sum=-(nums[l]+nums[m]);
+			if(sum<nums[m])break;
+			if(auto temp=BinarySearch(nums,sum,m+1);temp!=-1){
 				ret.emplace_back(vector<int>{nums[l],nums[m],nums[temp]});
 				
 			}
@@ -172,9 +173,24 @@ ostream& operator<<(ostream&os,const vector<T>&v){
 	os<<endl;
 	return os;
 }
-
+int minSubArrayLen(int target, vector<int>& nums) {
+	int l=0,r=0;
+	int sum=nums[0];
+	int length=INT_MAX;
+	while(1){
+		while(r+1<nums.size()&&sum<target){
+			sum+=nums[++r];
+		}
+		while(l<=r&&sum>=target){
+			length=min(length,r-l+1);
+			sum-=nums[l++];
+		}
+		if(r==nums.size()-1)break;
+	}
+	return length==INT_MAX?0:length;
+}
 int main(){
-	vector<int>temp{-4,-1,-1,0,1,2};
-	std::cout<<threeSum(temp);
+	vector<int>temp{1,11,11};
+	std::cout<<minSubArrayLen(11,temp);
 	return 0;
 }
