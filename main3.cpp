@@ -189,8 +189,28 @@ int minSubArrayLen(int target, vector<int>& nums) {
 	}
 	return length==INT_MAX?0:length;
 }
+int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+	int l=0,r=0,sum=nums[0],cnt=0;
+	while(1){
+		while(r+1<size(nums)&&sum<k){
+			cnt+=(r-l+1);
+			sum*=nums[++r];
+		}
+		while(l<=r&&sum>=k){
+			sum/=nums[l++];
+		}
+		if(l>r){
+			sum=nums[++r];
+		}
+		if(r==nums.size()-1){
+			if(sum<k)cnt+=(r-l+1);
+			break;
+		}
+	}
+	return cnt;
+}
 int main(){
-	vector<int>temp{1,11,11};
-	std::cout<<minSubArrayLen(11,temp);
+	vector<int>temp{2,100,2,2,2};
+	std::cout<<numSubarrayProductLessThanK(temp,100);
 	return 0;
 }
