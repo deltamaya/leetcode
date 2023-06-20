@@ -209,8 +209,24 @@ int numSubarrayProductLessThanK(vector<int>& nums, int k) {
 	}
 	return cnt;
 }
+int findMaxLength(vector<int>& nums) {
+	unordered_map<int,int>mp;
+	mp[0]=-1;
+	int ret=0,cnt=0;
+	for(int i=0;i<nums.size();++i){
+		if(nums[i])++cnt;
+		else --cnt;
+		if(mp.count(cnt)){
+			ret=max(ret,i-mp[cnt]);
+		}else mp[cnt]=i;
+	}
+	return ret;
+}
+
+
+
 int main(){
-	vector<int>temp{2,100,2,2,2};
-	std::cout<<numSubarrayProductLessThanK(temp,100);
+	vector<int>temp{0,0,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,0,1,0,1,1,0,0,0,0,0,0};
+	std::cout<<findMaxLength(temp);
 	return 0;
 }
