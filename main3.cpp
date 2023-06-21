@@ -223,10 +223,33 @@ int findMaxLength(vector<int>& nums) {
 	return ret;
 }
 
-
-
+int test_of_string_view(){
+	const string temp('m',100);
+	std::string_view str_view=temp;
+	
+	cout<<strlen(temp.data())<<' '<<sizeof(str_view.data())<<endl;
+}
+class NumMatrix {
+	vector<vector<int>>pre_sum;
+public:
+	NumMatrix(vector<vector<int>>& matrix) {
+		pre_sum=vector<vector<int>>(matrix.size(),vector<int>(matrix[0].size()+1,0));
+		for(int i=0;i<matrix.size();++i){
+			for(int j=1;j<=matrix[0].size();++j){
+				pre_sum[i][j]=matrix[i][j-1]+pre_sum[i][j-1];
+			}
+		}
+	}
+	
+	int sumRegion(int row1, int col1, int row2, int col2) {
+		int ret=0;
+		for(int r=row1;r<=row2;++r){
+			ret+=pre_sum[r][col2+1]-pre_sum[r][col1];
+		}
+		return ret;
+	}
+};
 int main(){
-	vector<int>temp{0,0,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,0,1,0,1,1,0,0,0,0,0,0};
-	std::cout<<findMaxLength(temp);
+	test_of_string_view();
 	return 0;
 }
