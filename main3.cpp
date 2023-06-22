@@ -249,7 +249,33 @@ public:
 		return ret;
 	}
 };
+
+bool checkInclusion(string& target, string& s) {
+	if(target.size()>s.size())return false;
+	unordered_map<char,int>temp;
+	for(auto ch:target){
+		temp[ch]++;
+	}
+	int begin=s.find_first_of(target);
+	int i=begin;
+	while(i<s.size()){
+		if(auto it=temp.find(s[i]);it!=temp.end()){
+			if(--(it->second)<0){
+				while(s[begin]!=s[i])temp[s[begin++]]++;
+				temp[s[begin++]]++;
+			}
+			if(i-begin+1==target.size())return true;
+			++i;
+		}else{
+			while(begin<i)++temp[s[begin++]];
+			while(begin<s.size()&&temp.find(s[begin])==temp.end())++begin;
+			i=begin;
+		}
+	}
+	return false;
+}
 int main(){
-	test_of_string_view();
+	string target="ab",s="eboaeee";
+	checkInclusion(target,s);
 	return 0;
 }
