@@ -274,8 +274,37 @@ bool checkInclusion(string& target, string& s) {
 	}
 	return false;
 }
+vector<int> findAnagrams(const string& target,const string& s) {
+	if(target.size()>s.size())return {};
+	vector<int>ret;
+	unordered_map<char,int>temp;
+	for(auto ch:target){
+		temp[ch]++;
+	}
+	int begin=s.find_first_of(target);
+	int i=begin;
+	while(i<s.size()){
+		if(auto it=temp.find(s[i]);it!=temp.end()){
+			if(--(it->second)<0){
+				while(s[begin]!=s[i])temp[s[begin++]]++;
+				temp[s[begin++]]++;
+			}
+			if(i-begin+1==target.size()){
+				ret.push_back(begin);
+				++temp[s[begin++]];
+			}
+			++i;
+		}else{
+			while(begin<i)++temp[s[begin++]];
+			while(begin<s.size()&&temp.find(s[begin])==temp.end())++begin;
+			i=begin;
+		}
+	}
+	return ret;
+}
 int main(){
-	string target="ab",s="eboaeee";
-	checkInclusion(target,s);
+	string target="acb",s="cbaebabacd";
+	auto ret=findAnagrams(target,s);
+	cout<<ret;
 	return 0;
 }
