@@ -302,9 +302,60 @@ vector<int> findAnagrams(const string& target,const string& s) {
 	}
 	return ret;
 }
+int lengthOfLongestSubstring(string& s) {
+	int ret=0;
+	unordered_map<char,bool>dict;
+	int l=0,r=0;
+	while(r<s.size()){
+		while(r<s.size()&&(dict.find(s[r])==dict.end()||!dict[s[r]])){
+			dict[s[r++]]=true;
+		}
+		ret=max(ret,r-l);
+		while(s[l]!=s[r]){
+			dict[s[l++]]=false;
+		}
+		dict[s[l++]]=false;
+	}
+	return ret;
+}
+string minWindow(string& s, string& target) {
+	unordered_map<char,int>dict;
+	for(auto &&e:target){
+		dict[e]++;
+	}
+	int r=s.find_first_of(target),l=r,len=s.size()+1,begin=l,cnt=0;
+	while(r<s.size()){
+		while(r<s.size()&&dict.find(s[r])==dict.end())++r;
+		if(r==s.size())break;
+		++cnt;
+		if(--dict[s[r]]<0){
+			while(s[l]!=s[r]){
+				if(dict.find(s[l])!=dict.end()){
+					dict[s[l]]++;
+					--cnt;
+				}
+				++l;
+			}
+			dict[s[l++]]++;
+			--cnt;
+			while(l<r&&dict.find(s[l])==dict.end())++l;
+		}else if(dict[s[r]]==0&&cnt==target.size()){
+			if(len>r-l+1){
+				begin=l;
+				len=r-l+1;
+			}
+			dict[s[l++]]++;
+			--cnt;
+			while(l<r&&dict.find(s[l])==dict.end())++l;
+		}
+		++r;
+	}
+	if(len==s.size()+1)return "";
+	return s.substr(begin,len);
+}
 int main(){
-	string target="acb",s="cbaebabacd";
-	auto ret=findAnagrams(target,s);
+	string target="abcdd",s="aaaaaaaaaaaabbbbbcdd";
+	auto ret= minWindow(s,target);
 	cout<<ret;
 	return 0;
 }
