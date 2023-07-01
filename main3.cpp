@@ -353,9 +353,44 @@ string minWindow(string& s, string& target) {
 	if(len==s.size()+1)return "";
 	return s.substr(begin,len);
 }
+bool isPalindrome(string s) {
+    int l=0,r=s.size()-1;
+    while(l<r){
+        while(l<r&&!isalnum(s[l]))
+			++l;
+        while(l<r&&!isalnum(s[r]))
+			--r;
+        if(isalpha(s[l])&&(abs(s[l]-s[r])!=0&&abs(s[l]-s[r])!='a'-'A')){
+            return false;
+        }
+		if(s[l]<='9'&&s[l]>='0'){
+            if(s[l]!=s[r])return false;
+        }
+		++l;--r;
+    }
+    return true;
+}
+bool validPalindrome_rec(const string&s){
+	int l=0,r=s.size()-1;
+	while(l<r){
+		if(s[l]!=s[r]){
+			return false;
+		}
+		++l;--r;
+	}
+	return true;
+}
+bool validPalindrome(const string& s) {
+	int l=0,r=s.size()-1;
+	while(l<r){
+		if(s[l]!=s[r]){
+			return validPalindrome_rec(s.substr(l,r-l))|| validPalindrome_rec(s.substr(l+1,r-l));
+		}
+		++l;--r;
+	}
+	return true;
+}
 int main(){
-	string target="abcdd",s="aaaaaaaaaaaabbbbbcdd";
-	auto ret= minWindow(s,target);
-	cout<<ret;
+	cout<<validPalindrome("ececabbacec");
 	return 0;
 }
