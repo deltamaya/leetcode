@@ -390,7 +390,45 @@ bool validPalindrome(const string& s) {
 	}
 	return true;
 }
+class LRUCache {
+	const int _capacity;
+	int _size;
+	list<int>_ls;
+	unordered_map<int,int>_ht;
+public:
+	LRUCache(int capacity):_capacity(capacity),_size(0),_ht(),_ls() {
+	
+	}
+	
+	int get(int key) {
+		auto ret=_ht.find(key);
+		if(ret==_ht.end())return-1;
+		_ls.erase(std::find(_ls.begin(), _ls.end(),(key)));
+		_ls.push_front(key);
+		return ret->second;
+	}
+	
+	void put(int key, int value) {
+		auto ret=_ht.find(key);
+		if(ret!=_ht.end()){
+			ret->second=value;
+			_ls.erase(std::find(_ls.begin(), _ls.end(),key));
+			_ls.push_front(key);
+		}else{
+			if(_size==_capacity){
+				auto least=_ls.back();
+				_ls.pop_back();
+				_ht.erase(_ht.find(least));
+			}else{
+				++_size;
+			}
+			_ls.push_front(key);
+			_ht[key]=value;
+		}
+	}
+};
+
 int main(){
-	cout<<validPalindrome("ececabbacec");
+	
 	return 0;
 }
