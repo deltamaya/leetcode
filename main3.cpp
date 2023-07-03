@@ -427,8 +427,29 @@ public:
 		}
 	}
 };
-
+bool IsPalindrome(const string&s,int l,int r){
+	while(l<r){
+		if(s[l]==s[r]){
+			++l;--r;
+		}else{
+			return false;
+		}
+	}
+	return true;
+}
+int countSubstrings(string s) {
+	vector<vector<int>>dp(s.size(),vector<int>(s.size(),1));
+	int ret=0;
+	for(int i=0;i<s.size();++i)dp[i][i]=1;
+	for(int i=s.size()-1;i>=0;--i){
+		for(int j=i+1;j<s.size();++j){
+			dp[i][j]=(dp[i+1][j-1]&&s[i]==s[j]?1:0);
+			ret+=dp[i][j];
+		}
+	}
+	return ret+s.size();
+}
 int main(){
-	
+	countSubstrings("aaa");
 	return 0;
 }
