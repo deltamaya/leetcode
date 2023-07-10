@@ -449,6 +449,30 @@ int countSubstrings(string s) {
 	}
 	return ret+s.size();
 }
+//vector<int> singleNumber(vector<int>& nums) {
+//	assert(!(nums.size()%2));
+//	if(nums.size()==2)return nums;
+//	int ret=0;
+//	for(auto e:nums){
+//		ret^=e;
+//	}
+//	int temp=(ret==INT_MIN?ret:ret&-ret);
+//	int t1,t2;
+//	t1=t2=0;
+//	for(auto e:nums){
+//		if(temp&e){
+//			t1^=e;
+//		}else{
+//			t2^=e;
+//		}
+//	}
+//	return {t1,t2};
+//}
+int MoreThanHalfNum_Solution(vector<int>& numbers) {
+	// write code here
+	sort(numbers.begin(),numbers.end());
+	return numbers[numbers.size()/2];
+}
 int main(){
 	countSubstrings("aaa");
 	return 0;
